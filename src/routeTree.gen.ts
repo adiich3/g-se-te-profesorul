@@ -15,8 +15,10 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CautaRouteImport } from './routes/cauta'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SedintaLessonIdRouteImport } from './routes/sedinta.$lessonId'
 import { Route as RezervareTutorIdRouteImport } from './routes/rezervare.$tutorId'
 import { Route as ProfesorTutorIdRouteImport } from './routes/profesor.$tutorId'
+import { Route as LectieLessonIdRouteImport } from './routes/lectie.$lessonId'
 
 const UrgentRoute = UrgentRouteImport.update({
   id: '/urgent',
@@ -48,6 +50,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SedintaLessonIdRoute = SedintaLessonIdRouteImport.update({
+  id: '/sedinta/$lessonId',
+  path: '/sedinta/$lessonId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RezervareTutorIdRoute = RezervareTutorIdRouteImport.update({
   id: '/rezervare/$tutorId',
   path: '/rezervare/$tutorId',
@@ -58,6 +65,11 @@ const ProfesorTutorIdRoute = ProfesorTutorIdRouteImport.update({
   path: '/profesor/$tutorId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LectieLessonIdRoute = LectieLessonIdRouteImport.update({
+  id: '/lectie/$lessonId',
+  path: '/lectie/$lessonId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,8 +78,10 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
   '/urgent': typeof UrgentRoute
+  '/lectie/$lessonId': typeof LectieLessonIdRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
+  '/sedinta/$lessonId': typeof SedintaLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -76,8 +90,10 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
   '/urgent': typeof UrgentRoute
+  '/lectie/$lessonId': typeof LectieLessonIdRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
+  '/sedinta/$lessonId': typeof SedintaLessonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -87,8 +103,10 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
   '/urgent': typeof UrgentRoute
+  '/lectie/$lessonId': typeof LectieLessonIdRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
+  '/sedinta/$lessonId': typeof SedintaLessonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -99,8 +117,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/onboarding'
     | '/urgent'
+    | '/lectie/$lessonId'
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
+    | '/sedinta/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -109,8 +129,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/onboarding'
     | '/urgent'
+    | '/lectie/$lessonId'
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
+    | '/sedinta/$lessonId'
   id:
     | '__root__'
     | '/'
@@ -119,8 +141,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/onboarding'
     | '/urgent'
+    | '/lectie/$lessonId'
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
+    | '/sedinta/$lessonId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -130,8 +154,10 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   OnboardingRoute: typeof OnboardingRoute
   UrgentRoute: typeof UrgentRoute
+  LectieLessonIdRoute: typeof LectieLessonIdRoute
   ProfesorTutorIdRoute: typeof ProfesorTutorIdRoute
   RezervareTutorIdRoute: typeof RezervareTutorIdRoute
+  SedintaLessonIdRoute: typeof SedintaLessonIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -178,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sedinta/$lessonId': {
+      id: '/sedinta/$lessonId'
+      path: '/sedinta/$lessonId'
+      fullPath: '/sedinta/$lessonId'
+      preLoaderRoute: typeof SedintaLessonIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rezervare/$tutorId': {
       id: '/rezervare/$tutorId'
       path: '/rezervare/$tutorId'
@@ -192,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfesorTutorIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lectie/$lessonId': {
+      id: '/lectie/$lessonId'
+      path: '/lectie/$lessonId'
+      fullPath: '/lectie/$lessonId'
+      preLoaderRoute: typeof LectieLessonIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -202,8 +242,10 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   OnboardingRoute: OnboardingRoute,
   UrgentRoute: UrgentRoute,
+  LectieLessonIdRoute: LectieLessonIdRoute,
   ProfesorTutorIdRoute: ProfesorTutorIdRoute,
   RezervareTutorIdRoute: RezervareTutorIdRoute,
+  SedintaLessonIdRoute: SedintaLessonIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
