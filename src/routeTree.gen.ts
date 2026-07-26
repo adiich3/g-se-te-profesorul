@@ -9,11 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UrgentRouteImport } from './routes/urgent'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as CautaRouteImport } from './routes/cauta'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProfesorTutorIdRouteImport } from './routes/profesor.$tutorId'
 
+const UrgentRoute = UrgentRouteImport.update({
+  id: '/urgent',
+  path: '/urgent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -34,18 +41,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfesorTutorIdRoute = ProfesorTutorIdRouteImport.update({
+  id: '/profesor/$tutorId',
+  path: '/profesor/$tutorId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
   '/onboarding': typeof OnboardingRoute
+  '/urgent': typeof UrgentRoute
+  '/profesor/$tutorId': typeof ProfesorTutorIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
   '/onboarding': typeof OnboardingRoute
+  '/urgent': typeof UrgentRoute
+  '/profesor/$tutorId': typeof ProfesorTutorIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +69,34 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
   '/onboarding': typeof OnboardingRoute
+  '/urgent': typeof UrgentRoute
+  '/profesor/$tutorId': typeof ProfesorTutorIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/cauta' | '/onboarding'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/cauta'
+    | '/onboarding'
+    | '/urgent'
+    | '/profesor/$tutorId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/cauta' | '/onboarding'
-  id: '__root__' | '/' | '/auth' | '/cauta' | '/onboarding'
+  to:
+    | '/'
+    | '/auth'
+    | '/cauta'
+    | '/onboarding'
+    | '/urgent'
+    | '/profesor/$tutorId'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/cauta'
+    | '/onboarding'
+    | '/urgent'
+    | '/profesor/$tutorId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +104,19 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CautaRoute: typeof CautaRoute
   OnboardingRoute: typeof OnboardingRoute
+  UrgentRoute: typeof UrgentRoute
+  ProfesorTutorIdRoute: typeof ProfesorTutorIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/urgent': {
+      id: '/urgent'
+      path: '/urgent'
+      fullPath: '/urgent'
+      preLoaderRoute: typeof UrgentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
@@ -99,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profesor/$tutorId': {
+      id: '/profesor/$tutorId'
+      path: '/profesor/$tutorId'
+      fullPath: '/profesor/$tutorId'
+      preLoaderRoute: typeof ProfesorTutorIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +160,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CautaRoute: CautaRoute,
   OnboardingRoute: OnboardingRoute,
+  UrgentRoute: UrgentRoute,
+  ProfesorTutorIdRoute: ProfesorTutorIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
