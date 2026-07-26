@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UrgentRouteImport } from './routes/urgent'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CautaRouteImport } from './routes/cauta'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RezervareTutorIdRouteImport } from './routes/rezervare.$tutorId'
 import { Route as ProfesorTutorIdRouteImport } from './routes/profesor.$tutorId'
 
 const UrgentRoute = UrgentRouteImport.update({
@@ -24,6 +26,11 @@ const UrgentRoute = UrgentRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CautaRoute = CautaRouteImport.update({
@@ -41,6 +48,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RezervareTutorIdRoute = RezervareTutorIdRouteImport.update({
+  id: '/rezervare/$tutorId',
+  path: '/rezervare/$tutorId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfesorTutorIdRoute = ProfesorTutorIdRouteImport.update({
   id: '/profesor/$tutorId',
   path: '/profesor/$tutorId',
@@ -51,26 +63,32 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
+  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
   '/urgent': typeof UrgentRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
+  '/rezervare/$tutorId': typeof RezervareTutorIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
+  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
   '/urgent': typeof UrgentRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
+  '/rezervare/$tutorId': typeof RezervareTutorIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
+  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
   '/urgent': typeof UrgentRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
+  '/rezervare/$tutorId': typeof RezervareTutorIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -78,34 +96,42 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cauta'
+    | '/dashboard'
     | '/onboarding'
     | '/urgent'
     | '/profesor/$tutorId'
+    | '/rezervare/$tutorId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/cauta'
+    | '/dashboard'
     | '/onboarding'
     | '/urgent'
     | '/profesor/$tutorId'
+    | '/rezervare/$tutorId'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/cauta'
+    | '/dashboard'
     | '/onboarding'
     | '/urgent'
     | '/profesor/$tutorId'
+    | '/rezervare/$tutorId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   CautaRoute: typeof CautaRoute
+  DashboardRoute: typeof DashboardRoute
   OnboardingRoute: typeof OnboardingRoute
   UrgentRoute: typeof UrgentRoute
   ProfesorTutorIdRoute: typeof ProfesorTutorIdRoute
+  RezervareTutorIdRoute: typeof RezervareTutorIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cauta': {
@@ -145,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rezervare/$tutorId': {
+      id: '/rezervare/$tutorId'
+      path: '/rezervare/$tutorId'
+      fullPath: '/rezervare/$tutorId'
+      preLoaderRoute: typeof RezervareTutorIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profesor/$tutorId': {
       id: '/profesor/$tutorId'
       path: '/profesor/$tutorId'
@@ -159,9 +199,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   CautaRoute: CautaRoute,
+  DashboardRoute: DashboardRoute,
   OnboardingRoute: OnboardingRoute,
   UrgentRoute: UrgentRoute,
   ProfesorTutorIdRoute: ProfesorTutorIdRoute,
+  RezervareTutorIdRoute: RezervareTutorIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
