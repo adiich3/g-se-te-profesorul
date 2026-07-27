@@ -40,56 +40,51 @@ export function scoreTutor(tutor: TutorProfile, c: MatchCriteria): MatchResult |
   max += 15;
   if (c.level) {
     const ok = tutor.subjects.some((s) => s.levels.includes(c.level!));
-    if (ok) {
-      points += 15;
-      reasons.push(`Lucrează cu elevi de ${levelLabel(c.level)}`);
-    }
+    if (!ok) return null;
+    points += 15;
+    reasons.push(`Lucrează cu elevi de ${levelLabel(c.level)}`);
   } else points += 12;
 
   // Examen
   max += 15;
   if (c.exam) {
     const ok = tutor.subjects.some((s) => s.exams.includes(c.exam!));
-    if (ok) {
-      points += 15;
-      reasons.push(`Experiență pe ${examLabel(c.exam)}`);
-    }
+    if (!ok) return null;
+    points += 15;
+    reasons.push(`Experiență pe ${examLabel(c.exam)}`);
   } else points += 12;
 
   // Format
   max += 12;
   if (c.format && c.format !== "ambele") {
-    if (tutor.format === "ambele" || tutor.format === c.format) {
-      points += 12;
-      reasons.push(c.format === "online" ? "Predă online" : `Predă fizic în ${tutor.city}`);
-    }
+    if (tutor.format !== "ambele" && tutor.format !== c.format) return null;
+    points += 12;
+    reasons.push(c.format === "online" ? "Predă online" : `Predă fizic în ${tutor.city}`);
   } else points += 10;
 
   // Oraș (doar pentru fizic)
   max += 6;
   if (c.format === "in-persoana" && c.city) {
-    if (tutor.city.toLowerCase() === c.city.toLowerCase()) {
-      points += 6;
-      reasons.push(`Este din ${tutor.city}`);
-    }
+    if (tutor.city.toLowerCase() !== c.city.trim().toLowerCase()) return null;
+    points += 6;
+    reasons.push(`Este din ${tutor.city}`);
   } else points += 5;
 
   // Buget
   max += 12;
   if (c.budgetMax) {
-    if (tutor.pricePerSession <= c.budgetMax) {
-      points += 12;
-      reasons.push(`Se încadrează în buget (${tutor.pricePerSession} RON/ședință)`);
-    } else if (tutor.pricePerSession <= c.budgetMax * 1.15) {
-      points += 6;
-    }
+    if (tutor.pricePerSession > c.budgetMax) return null;
+    points += 12;
+    reasons.push(`Se încadrează în buget (${tutor.pricePerSession} RON/ședință)`);
   } else points += 9;
 
   // Disponibilitate în intervalele preferate
   max += 10;
   const dayMatch =
     c.days && c.days.length
-      ? tutor.availability.some((w) => c.days!.includes(w.day) && (!c.fromHour || parseInt(w.to) >= c.fromHour))
+      ? tutor.availability.some(
+          (w) => c.days!.includes(w.day) && (!c.fromHour || parseInt(w.to, 10) > c.fromHour),
+        )
       : true;
   if (dayMatch) {
     points += 10;
@@ -100,11 +95,13 @@ export function scoreTutor(tutor: TutorProfile, c: MatchCriteria): MatchResult |
   if (c.availableToday) reasons.push("Are loc liber azi");
 
   if (c.minRating && tutor.rating < c.minRating) return null;
-  if (tutor.rating >= 4.8) reasons.push(`Rating ${tutor.rating.toFixed(1)} din ${tutor.reviewCount} recenzii`);
+  if (tutor.rating >= 4.8)
+    reasons.push(`Rating ${tutor.rating.toFixed(1)} din ${tutor.reviewCount} recenzii`);
 
   if (c.query) {
     const q = c.query.toLowerCase();
-    const hay = `${tutor.headline} ${tutor.intro} ${tutor.approach} ${userById(tutor.userId)?.fullName}`.toLowerCase();
+    const hay =
+      `${tutor.headline} ${tutor.intro} ${tutor.approach} ${userById(tutor.userId)?.fullName}`.toLowerCase();
     if (hay.includes(q)) {
       points += 4;
       max += 4;
@@ -157,17 +154,35 @@ const TZ = "Europe/Bucharest";
 
 export function formatSlot(iso: string): string {
   const d = new Date(iso);
-  const day = new Intl.DateTimeFormat("ro-RO", { weekday: "short", day: "numeric", month: "short", timeZone: TZ }).format(d);
-  const time = new Intl.DateTimeFormat("ro-RO", { hour: "2-digit", minute: "2-digit", timeZone: TZ }).format(d);
+  const day = new Intl.DateTimeFormat("ro-RO", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    timeZone: TZ,
+  }).format(d);
+  const time = new Intl.DateTimeFormat("ro-RO", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: TZ,
+  }).format(d);
   return `${day}, ${time}`;
 }
 
 export function formatDay(iso: string): string {
-  return new Intl.DateTimeFormat("ro-RO", { weekday: "long", day: "numeric", month: "long", timeZone: TZ }).format(new Date(iso));
+  return new Intl.DateTimeFormat("ro-RO", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: TZ,
+  }).format(new Date(iso));
 }
 
 export function formatTime(iso: string): string {
-  return new Intl.DateTimeFormat("ro-RO", { hour: "2-digit", minute: "2-digit", timeZone: TZ }).format(new Date(iso));
+  return new Intl.DateTimeFormat("ro-RO", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: TZ,
+  }).format(new Date(iso));
 }
 
 export function formatRON(value: number): string {

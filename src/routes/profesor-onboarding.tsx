@@ -14,7 +14,10 @@ export const Route = createFileRoute("/profesor-onboarding")({
   head: () => ({
     meta: [
       { title: "Devino profesor · Medito" },
-      { name: "description", content: "Creează-ți profilul de profesor: materii, niveluri, preț și disponibilitate." },
+      {
+        name: "description",
+        content: "Creează-ți profilul de profesor: materii, niveluri, preț și disponibilitate.",
+      },
       { property: "og:title", content: "Devino profesor · Medito" },
       { property: "og:description", content: "Primești elevi potriviți cu specializarea ta." },
     ],
@@ -51,7 +54,10 @@ function TutorOnboarding() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="intro">Prezentare</Label>
-                <Textarea id="intro" placeholder="Câțiva ani de experiență, ce rezultate obțin elevii tăi…" />
+                <Textarea
+                  id="intro"
+                  placeholder="Câțiva ani de experiență, ce rezultate obțin elevii tăi…"
+                />
               </div>
             </>
           )}
@@ -67,10 +73,14 @@ function TutorOnboarding() {
                       key={s.id}
                       type="button"
                       aria-pressed={active}
-                      onClick={() => setPicked((p) => (active ? p.filter((x) => x !== s.id) : [...p, s.id]))}
+                      onClick={() =>
+                        setPicked((p) => (active ? p.filter((x) => x !== s.id) : [...p, s.id]))
+                      }
                       className={cn(
                         "rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors",
-                        active ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary/50",
+                        active
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border hover:border-primary/50",
                       )}
                     >
                       {s.name}

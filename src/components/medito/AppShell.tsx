@@ -57,7 +57,12 @@ export function AppShell({
             </Button>
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Deschide meniul">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                  aria-label="Deschide meniul"
+                >
                   <Menu />
                 </Button>
               </SheetTrigger>
@@ -100,7 +105,10 @@ export function AppShell({
                 <Link to="/cauta" className="block text-muted-foreground hover:text-foreground">
                   Caută profesori
                 </Link>
-                <Link to="/onboarding" className="block text-muted-foreground hover:text-foreground">
+                <Link
+                  to="/onboarding"
+                  className="block text-muted-foreground hover:text-foreground"
+                >
                   Găsește potrivirea
                 </Link>
                 <Link to="/urgent" className="block text-muted-foreground hover:text-foreground">
@@ -109,10 +117,16 @@ export function AppShell({
               </div>
               <div className="space-y-2">
                 <p className="font-semibold">Profesori</p>
-                <Link to="/profesor-onboarding" className="block text-muted-foreground hover:text-foreground">
+                <Link
+                  to="/profesor-onboarding"
+                  className="block text-muted-foreground hover:text-foreground"
+                >
                   Devino profesor
                 </Link>
-                <Link to="/profesor-dashboard" className="block text-muted-foreground hover:text-foreground">
+                <Link
+                  to="/profesor-dashboard"
+                  className="block text-muted-foreground hover:text-foreground"
+                >
                   Panou profesor
                 </Link>
                 <Link to="/admin" className="block text-muted-foreground hover:text-foreground">

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { IntegrationNote } from "@/components/medito/IntegrationNote";
 import { bookings, payments, subjectById, tutors, userById } from "@/lib/demo-data";
 import { formatDay, formatRON } from "@/lib/matching";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -27,14 +28,18 @@ function AdminPage() {
         <p className="mt-1.5 text-muted-foreground">Interfață internă, date demonstrative.</p>
 
         <IntegrationNote className="mt-6" title="Acces restricționat">
-          Rolurile (elev, profesor, administrator) se vor valida pe server, într-un tabel separat de roluri.
+          Rolurile (elev, profesor, administrator) se vor valida pe server, într-un tabel separat de
+          roluri.
         </IntegrationNote>
 
         <section className="mt-8">
           <h2 className="text-xl">Profesori ({tutors.length})</h2>
           <div className="surface-panel mt-4 divide-y divide-border">
             {tutors.map((t) => (
-              <div key={t.id} className="grid gap-2 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+              <div
+                key={t.id}
+                className="grid gap-2 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+              >
                 <div className="min-w-0">
                   <p className="font-medium">{userById(t.userId)!.fullName}</p>
                   <p className="truncate text-sm text-muted-foreground">
@@ -45,7 +50,15 @@ function AdminPage() {
                   <Badge variant={t.verified ? "secondary" : "outline"} className="font-normal">
                     {t.verified ? "Verificat" : "Neverificat"}
                   </Badge>
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      toast.info(
+                        "Verificarea este demonstrativă. În beta, acțiunea trebuie autorizată pe server.",
+                      )
+                    }
+                  >
                     {t.verified ? "Retrage" : "Verifică"}
                   </Button>
                 </div>
@@ -60,7 +73,10 @@ function AdminPage() {
             {bookings.map((b) => {
               const pay = payments.find((p) => p.bookingId === b.id);
               return (
-                <div key={b.id} className="grid gap-2 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                <div
+                  key={b.id}
+                  className="grid gap-2 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                >
                   <div className="min-w-0">
                     <p className="font-medium capitalize">{formatDay(b.start)}</p>
                     <p className="truncate text-sm text-muted-foreground">

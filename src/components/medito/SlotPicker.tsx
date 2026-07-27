@@ -23,7 +23,9 @@ export function SlotPicker({
   }, [slots]);
 
   if (!days.length) {
-    return <p className="text-sm text-muted-foreground">Nu există ore libere în perioada următoare.</p>;
+    return (
+      <p className="text-sm text-muted-foreground">Nu există ore libere în perioada următoare.</p>
+    );
   }
 
   return (
@@ -40,9 +42,11 @@ export function SlotPicker({
                 onClick={() => onSelect(slot)}
                 className={cn(
                   "rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
-                  slot.booked && "cursor-not-allowed border-dashed text-muted-foreground/60 line-through",
+                  slot.booked &&
+                    "cursor-not-allowed border-dashed text-muted-foreground/60 line-through",
                   !slot.booked && "hover:border-primary hover:bg-primary-soft",
-                  selectedId === slot.id && "border-primary bg-primary text-primary-foreground hover:bg-primary",
+                  selectedId === slot.id &&
+                    "border-primary bg-primary text-primary-foreground hover:bg-primary",
                 )}
               >
                 {formatTime(slot.start)}

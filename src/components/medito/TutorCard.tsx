@@ -17,7 +17,13 @@ export function initials(name: string) {
     .join("");
 }
 
-export function TutorCard({ match, showScore = true }: { match: MatchResult; showScore?: boolean }) {
+export function TutorCard({
+  match,
+  showScore = true,
+}: {
+  match: MatchResult;
+  showScore?: boolean;
+}) {
   const { tutor, user, score, reasons } = match;
   const subjectNames = tutor.subjects
     .map((s) => subjectById(s.subjectId)?.name)
@@ -43,8 +49,16 @@ export function TutorCard({ match, showScore = true }: { match: MatchResult; sho
           <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
             <RatingStars rating={tutor.rating} count={tutor.reviewCount} className="text-xs" />
             <span className="inline-flex items-center gap-1">
-              {tutor.format === "online" ? <Monitor className="size-3.5" /> : <MapPin className="size-3.5" />}
-              {tutor.format === "online" ? "Online" : tutor.format === "in-persoana" ? tutor.city : `Online · ${tutor.city}`}
+              {tutor.format === "online" ? (
+                <Monitor className="size-3.5" />
+              ) : (
+                <MapPin className="size-3.5" />
+              )}
+              {tutor.format === "online"
+                ? "Online"
+                : tutor.format === "in-persoana"
+                  ? tutor.city
+                  : `Online · ${tutor.city}`}
             </span>
           </div>
         </div>

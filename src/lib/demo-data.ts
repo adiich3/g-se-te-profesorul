@@ -22,11 +22,51 @@ import type {
 export const IS_DEMO_DATA = true;
 
 /* ------------------------------------------------------------------ */
-/* Date utils – calculate din ziua UTC curentă ca SSR și client să     */
-/* producă exact aceleași valori.                                      */
+/* Date utils – calculate în fusul orar al României ca SSR și client   */
+/* să producă exact aceleași valori.                                    */
 /* ------------------------------------------------------------------ */
-const now = new Date();
-const dayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+const TZ = "Europe/Bucharest";
+const dateParts = new Intl.DateTimeFormat("en-GB", {
+  timeZone: TZ,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hourCycle: "h23",
+});
+
+function partsInBucharest(date: Date) {
+  const parts = Object.fromEntries(
+    dateParts
+      .formatToParts(date)
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value]),
+  );
+  return {
+    year: Number(parts.year),
+    month: Number(parts.month),
+    day: Number(parts.day),
+    hour: Number(parts.hour),
+    minute: Number(parts.minute),
+    second: Number(parts.second),
+  };
+}
+
+const today = partsInBucharest(new Date());
+const noonUtc = new Date(Date.UTC(today.year, today.month - 1, today.day, 12));
+const noonInBucharest = partsInBucharest(noonUtc);
+const offsetMs =
+  Date.UTC(
+    noonInBucharest.year,
+    noonInBucharest.month - 1,
+    noonInBucharest.day,
+    noonInBucharest.hour,
+    noonInBucharest.minute,
+    noonInBucharest.second,
+  ) - noonUtc.getTime();
+const dayStart = Date.UTC(today.year, today.month - 1, today.day) - offsetMs;
 
 export function isoAt(dayOffset: number, hour: number, minute = 0): string {
   return new Date(dayStart + dayOffset * 86400000 + hour * 3600000 + minute * 60000).toISOString();
@@ -161,7 +201,13 @@ export const tutors: TutorProfile[] = [
       },
     ],
     qualifications: [
-      { id: "q1", title: "Licență Matematică", issuer: "Universitatea din București", year: 2012, verified: true },
+      {
+        id: "q1",
+        title: "Licență Matematică",
+        issuer: "Universitatea din București",
+        year: 2012,
+        verified: true,
+      },
       { id: "q2", title: "Grad didactic II", issuer: "MEN", year: 2018, verified: false },
     ],
     lessonDurations: [60, 90],
@@ -233,7 +279,13 @@ export const tutors: TutorProfile[] = [
       },
     ],
     qualifications: [
-      { id: "q4", title: "Licență Litere", issuer: "Universitatea Al. I. Cuza", year: 2008, verified: true },
+      {
+        id: "q4",
+        title: "Licență Litere",
+        issuer: "Universitatea Al. I. Cuza",
+        year: 2008,
+        verified: true,
+      },
       { id: "q5", title: "Grad didactic I", issuer: "MEN", year: 2016, verified: true },
     ],
     lessonDurations: [60, 90],
@@ -261,10 +313,22 @@ export const tutors: TutorProfile[] = [
     format: "in-persoana",
     yearsExperience: 9,
     subjects: [
-      { subjectId: "fizica", levels: ["gimnaziu", "liceu"], exams: ["bacalaureat", "sprijin-scolar"], pricePerSession: 100 },
-      { subjectId: "mate", levels: ["gimnaziu"], exams: ["evaluare-nationala", "sprijin-scolar"], pricePerSession: 95 },
+      {
+        subjectId: "fizica",
+        levels: ["gimnaziu", "liceu"],
+        exams: ["bacalaureat", "sprijin-scolar"],
+        pricePerSession: 100,
+      },
+      {
+        subjectId: "mate",
+        levels: ["gimnaziu"],
+        exams: ["evaluare-nationala", "sprijin-scolar"],
+        pricePerSession: 95,
+      },
     ],
-    qualifications: [{ id: "q6", title: "Licență Fizică", issuer: "UVT", year: 2014, verified: false }],
+    qualifications: [
+      { id: "q6", title: "Licență Fizică", issuer: "UVT", year: 2014, verified: false },
+    ],
     lessonDurations: [50, 60],
     pricePerSession: 100,
     rating: 4.7,
@@ -326,11 +390,27 @@ export const tutors: TutorProfile[] = [
     format: "ambele",
     yearsExperience: 12,
     subjects: [
-      { subjectId: "chimie", levels: ["liceu"], exams: ["admitere-facultate", "bacalaureat"], pricePerSession: 160 },
-      { subjectId: "biologie", levels: ["liceu"], exams: ["admitere-facultate", "bacalaureat"], pricePerSession: 160 },
+      {
+        subjectId: "chimie",
+        levels: ["liceu"],
+        exams: ["admitere-facultate", "bacalaureat"],
+        pricePerSession: 160,
+      },
+      {
+        subjectId: "biologie",
+        levels: ["liceu"],
+        exams: ["admitere-facultate", "bacalaureat"],
+        pricePerSession: 160,
+      },
     ],
     qualifications: [
-      { id: "q8", title: "Doctorat Chimie", issuer: "Universitatea Transilvania", year: 2015, verified: true },
+      {
+        id: "q8",
+        title: "Doctorat Chimie",
+        issuer: "Universitatea Transilvania",
+        year: 2015,
+        verified: true,
+      },
     ],
     lessonDurations: [90, 120],
     pricePerSession: 160,
@@ -356,9 +436,16 @@ export const tutors: TutorProfile[] = [
     format: "ambele",
     yearsExperience: 6,
     subjects: [
-      { subjectId: "germana", levels: ["gimnaziu", "liceu", "adult"], exams: ["certificare-limba", "sprijin-scolar"], pricePerSession: 105 },
+      {
+        subjectId: "germana",
+        levels: ["gimnaziu", "liceu", "adult"],
+        exams: ["certificare-limba", "sprijin-scolar"],
+        pricePerSession: 105,
+      },
     ],
-    qualifications: [{ id: "q9", title: "Licență Germanistică", issuer: "ULBS", year: 2018, verified: true }],
+    qualifications: [
+      { id: "q9", title: "Licență Germanistică", issuer: "ULBS", year: 2018, verified: true },
+    ],
     lessonDurations: [50, 60],
     pricePerSession: 105,
     rating: 4.6,
@@ -384,11 +471,27 @@ export const tutors: TutorProfile[] = [
     format: "online",
     yearsExperience: 5,
     subjects: [
-      { subjectId: "mate", levels: ["facultate"], exams: ["examen-facultate"], pricePerSession: 170 },
-      { subjectId: "economie", levels: ["facultate"], exams: ["examen-facultate"], pricePerSession: 150 },
+      {
+        subjectId: "mate",
+        levels: ["facultate"],
+        exams: ["examen-facultate"],
+        pricePerSession: 170,
+      },
+      {
+        subjectId: "economie",
+        levels: ["facultate"],
+        exams: ["examen-facultate"],
+        pricePerSession: 150,
+      },
     ],
     qualifications: [
-      { id: "q10", title: "Master Matematică Aplicată", issuer: "Politehnica București", year: 2020, verified: true },
+      {
+        id: "q10",
+        title: "Master Matematică Aplicată",
+        issuer: "Politehnica București",
+        year: 2020,
+        verified: true,
+      },
     ],
     lessonDurations: [60, 90, 120],
     pricePerSession: 170,
@@ -451,13 +554,62 @@ export function hasSlotToday(tutorId: string): boolean {
 /* --------------------------- Recenzii ----------------------------- */
 
 export const reviews: Review[] = [
-  { id: "r1", tutorId: "t1", studentName: "Maria D.", rating: 5, date: isoAt(-12, 10), text: "Am crescut de la 6.20 la 8.90 la simulare în trei luni. Explică extrem de clar." },
-  { id: "r2", tutorId: "t1", studentName: "Ștefan P.", rating: 5, date: isoAt(-30, 10), text: "Foarte organizată, primesc temă și feedback după fiecare ședință." },
-  { id: "r3", tutorId: "t1", studentName: "Alexandra M.", rating: 4, date: isoAt(-55, 10), text: "Ritm alert, dar exact ce îmi trebuia înainte de Bac." },
-  { id: "r4", tutorId: "t2", studentName: "Tudor V.", rating: 5, date: isoAt(-8, 10), text: "Am intrat la Automatică. Problemele alese au fost fix pe profilul admiterii." },
-  { id: "r5", tutorId: "t3", studentName: "Ioana C.", rating: 5, date: isoAt(-20, 10), text: "Eseurile mele au altă formă acum. Corectura cu barem ajută enorm." },
-  { id: "r6", tutorId: "t5", studentName: "Bogdan A.", rating: 5, date: isoAt(-5, 10), text: "Am luat C1 Advanced din prima. Multă conversație, zero plictiseală." },
-  { id: "r7", tutorId: "t6", studentName: "Rareș N.", rating: 5, date: isoAt(-17, 10), text: "Simulările cronometrate m-au pregătit perfect pentru grilele de la UMF." },
+  {
+    id: "r1",
+    tutorId: "t1",
+    studentName: "Maria D.",
+    rating: 5,
+    date: isoAt(-12, 10),
+    text: "Am crescut de la 6.20 la 8.90 la simulare în trei luni. Explică extrem de clar.",
+  },
+  {
+    id: "r2",
+    tutorId: "t1",
+    studentName: "Ștefan P.",
+    rating: 5,
+    date: isoAt(-30, 10),
+    text: "Foarte organizată, primesc temă și feedback după fiecare ședință.",
+  },
+  {
+    id: "r3",
+    tutorId: "t1",
+    studentName: "Alexandra M.",
+    rating: 4,
+    date: isoAt(-55, 10),
+    text: "Ritm alert, dar exact ce îmi trebuia înainte de Bac.",
+  },
+  {
+    id: "r4",
+    tutorId: "t2",
+    studentName: "Tudor V.",
+    rating: 5,
+    date: isoAt(-8, 10),
+    text: "Am intrat la Automatică. Problemele alese au fost fix pe profilul admiterii.",
+  },
+  {
+    id: "r5",
+    tutorId: "t3",
+    studentName: "Ioana C.",
+    rating: 5,
+    date: isoAt(-20, 10),
+    text: "Eseurile mele au altă formă acum. Corectura cu barem ajută enorm.",
+  },
+  {
+    id: "r6",
+    tutorId: "t5",
+    studentName: "Bogdan A.",
+    rating: 5,
+    date: isoAt(-5, 10),
+    text: "Am luat C1 Advanced din prima. Multă conversație, zero plictiseală.",
+  },
+  {
+    id: "r7",
+    tutorId: "t6",
+    studentName: "Rareș N.",
+    rating: 5,
+    date: isoAt(-17, 10),
+    text: "Simulările cronometrate m-au pregătit perfect pentru grilele de la UMF.",
+  },
 ];
 
 export function reviewsForTutor(tutorId: string): Review[] {
@@ -582,13 +734,26 @@ export const payments: Payment[] = bookings.map((b, i) => ({
   bookingId: b.id,
   amount: b.price,
   currency: "RON",
-  status: b.status === "finalizata" ? "platita" : b.status === "anulata" ? "rambursata" : "in-procesare",
+  status:
+    b.status === "finalizata" ? "platita" : b.status === "anulata" ? "rambursata" : "in-procesare",
   method: "card",
 }));
 
 const materials: Material[] = [
-  { id: "m1", lessonId: "l1", name: "Fișă – funcții și grafice.pdf", type: "pdf", sizeLabel: "1,2 MB" },
-  { id: "m2", lessonId: "l1", name: "Variantă Bac rezolvată.pdf", type: "pdf", sizeLabel: "820 KB" },
+  {
+    id: "m1",
+    lessonId: "l1",
+    name: "Fișă – funcții și grafice.pdf",
+    type: "pdf",
+    sizeLabel: "1,2 MB",
+  },
+  {
+    id: "m2",
+    lessonId: "l1",
+    name: "Variantă Bac rezolvată.pdf",
+    type: "pdf",
+    sizeLabel: "820 KB",
+  },
   { id: "m3", lessonId: "l1", name: "Recapitulare video – limite", type: "link" },
 ];
 
@@ -597,7 +762,8 @@ const homework: Homework[] = [
     id: "h1",
     lessonId: "l1",
     title: "Exercițiile 1–8, fișa de funcții",
-    description: "Rezolvă exercițiile și trimite pozele cu rezolvările înainte de următoarea ședință.",
+    description:
+      "Rezolvă exercițiile și trimite pozele cu rezolvările înainte de următoarea ședință.",
     dueDate: isoAt(2, 20),
     status: "de-facut",
   },
@@ -621,7 +787,11 @@ export const lessons: Lesson[] = [
     start: isoAt(-7, 18),
     durationMinutes: 90,
     status: "finalizata",
-    topics: ["Funcții injective și surjective", "Grafice și monotonie", "Subiectul II – tipare frecvente"],
+    topics: [
+      "Funcții injective și surjective",
+      "Grafice și monotonie",
+      "Subiectul II – tipare frecvente",
+    ],
     notes:
       "Andrei stăpânește definițiile, dar pierde puncte la justificări. Am lucrat pe scrierea completă a raționamentului. Recomand 3 variante suplimentare până săptămâna viitoare.",
     materials,
@@ -647,7 +817,13 @@ export const lessons: Lesson[] = [
     notes: "Progres bun la combinatorică. Rămâne de exersat probabilitatea condiționată.",
     materials: [],
     homework: [homework[1]],
-    recording: { id: "rec2", lessonId: "l2", consentStudent: false, consentTutor: true, status: "indisponibila" },
+    recording: {
+      id: "rec2",
+      lessonId: "l2",
+      consentStudent: false,
+      consentTutor: true,
+      status: "indisponibila",
+    },
   },
   {
     id: "l3",
@@ -673,10 +849,38 @@ export function lessonForBooking(bookingId: string): Lesson | undefined {
 }
 
 export const progress: ProgressEntry[] = [
-  { id: "pg1", studentId: "u-student", subjectId: "mate", date: isoAt(-60, 10), score: 5.8, label: "Test inițial" },
-  { id: "pg2", studentId: "u-student", subjectId: "mate", date: isoAt(-40, 10), score: 6.4, label: "Simulare școală" },
-  { id: "pg3", studentId: "u-student", subjectId: "mate", date: isoAt(-20, 10), score: 7.1, label: "Variantă 42" },
-  { id: "pg4", studentId: "u-student", subjectId: "mate", date: isoAt(-7, 10), score: 7.6, label: "Variantă 58" },
+  {
+    id: "pg1",
+    studentId: "u-student",
+    subjectId: "mate",
+    date: isoAt(-60, 10),
+    score: 5.8,
+    label: "Test inițial",
+  },
+  {
+    id: "pg2",
+    studentId: "u-student",
+    subjectId: "mate",
+    date: isoAt(-40, 10),
+    score: 6.4,
+    label: "Simulare școală",
+  },
+  {
+    id: "pg3",
+    studentId: "u-student",
+    subjectId: "mate",
+    date: isoAt(-20, 10),
+    score: 7.1,
+    label: "Variantă 42",
+  },
+  {
+    id: "pg4",
+    studentId: "u-student",
+    subjectId: "mate",
+    date: isoAt(-7, 10),
+    score: 7.6,
+    label: "Variantă 58",
+  },
 ];
 
 export const favoriteTutorIds = ["t1", "t5"];
@@ -688,16 +892,56 @@ export const conversations: Conversation[] = [
     tutorId: "t1",
     lastMessageAt: isoAt(-1, 20),
     messages: [
-      { id: "msg1", conversationId: "c1", authorId: "u-student", text: "Bună ziua! Putem relua integralele marți?", sentAt: isoAt(-2, 19) },
-      { id: "msg2", conversationId: "c1", authorId: "u-t1", text: "Sigur, pregătesc o fișă cu 10 exerciții.", sentAt: isoAt(-1, 20) },
+      {
+        id: "msg1",
+        conversationId: "c1",
+        authorId: "u-student",
+        text: "Bună ziua! Putem relua integralele marți?",
+        sentAt: isoAt(-2, 19),
+      },
+      {
+        id: "msg2",
+        conversationId: "c1",
+        authorId: "u-t1",
+        text: "Sigur, pregătesc o fișă cu 10 exerciții.",
+        sentAt: isoAt(-1, 20),
+      },
     ],
   },
 ];
 
 /** Elevii tutorelui demo (folosit în dashboardul de profesor). */
 export const tutorStudents = [
-  { id: "u-student", name: "Andrei Popescu", subjectId: "mate", goal: "Bac M1 · țintă 8.50", lastScore: 7.6, lessons: 8 },
-  { id: "st-2", name: "Maria Dumitru", subjectId: "mate", goal: "Evaluare Națională", lastScore: 8.4, lessons: 12 },
-  { id: "st-3", name: "Ștefan Pop", subjectId: "mate", goal: "Admitere Politehnica", lastScore: 6.9, lessons: 5 },
-  { id: "st-4", name: "Alexandra Marin", subjectId: "mate", goal: "Bac M2", lastScore: 7.2, lessons: 3 },
+  {
+    id: "u-student",
+    name: "Andrei Popescu",
+    subjectId: "mate",
+    goal: "Bac M1 · țintă 8.50",
+    lastScore: 7.6,
+    lessons: 8,
+  },
+  {
+    id: "st-2",
+    name: "Maria Dumitru",
+    subjectId: "mate",
+    goal: "Evaluare Națională",
+    lastScore: 8.4,
+    lessons: 12,
+  },
+  {
+    id: "st-3",
+    name: "Ștefan Pop",
+    subjectId: "mate",
+    goal: "Admitere Politehnica",
+    lastScore: 6.9,
+    lessons: 5,
+  },
+  {
+    id: "st-4",
+    name: "Alexandra Marin",
+    subjectId: "mate",
+    goal: "Bac M2",
+    lastScore: 7.2,
+    lessons: 3,
+  },
 ];

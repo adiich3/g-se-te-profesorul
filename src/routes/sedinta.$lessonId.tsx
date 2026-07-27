@@ -24,7 +24,10 @@ export const Route = createFileRoute("/sedinta/$lessonId")({
   head: () => ({
     meta: [
       { title: "Sala de curs · Medito" },
-      { name: "description", content: "Sala de curs Medito: video, chat, materiale, tablă și cronometru." },
+      {
+        name: "description",
+        content: "Sala de curs Medito: video, chat, materiale, tablă și cronometru.",
+      },
       { property: "og:title", content: "Sala de curs · Medito" },
       { property: "og:description", content: "Ședințe online direct în platformă." },
       { name: "robots", content: "noindex" },
@@ -40,12 +43,26 @@ export const Route = createFileRoute("/sedinta/$lessonId")({
  */
 function LessonRoom() {
   const { lessonId } = Route.useParams();
-  const lesson = lessonById(lessonId) ?? lessonById("l3")!;
-  const tutor = tutorById(lesson.tutorId)!;
-  const tutorUser = userById(tutor.userId)!;
+  const lesson = lessonById(lessonId);
   const [mic, setMic] = useState(true);
   const [cam, setCam] = useState(true);
   const [consent, setConsent] = useState(false);
+
+  if (!lesson) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-foreground/95 p-6 text-center text-background">
+        <div>
+          <h1 className="text-2xl font-semibold">Ședința nu este disponibilă</h1>
+          <p className="mt-2 text-sm opacity-70">Verifică linkul sau întoarce-te la panoul tău.</p>
+          <Button asChild variant="secondary" className="mt-6">
+            <Link to="/dashboard">Mergi la panoul meu</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  const tutor = tutorById(lesson.tutorId)!;
+  const tutorUser = userById(tutor.userId)!;
 
   return (
     <div className="flex min-h-screen flex-col bg-foreground/95 text-background">
@@ -100,10 +117,13 @@ function LessonRoom() {
               className="mt-3 w-full gap-2"
               onClick={() => {
                 setConsent(!consent);
-                toast(consent ? "Înregistrare oprită" : "Cerere de acord trimisă celuilalt participant");
+                toast(
+                  consent ? "Înregistrare oprită" : "Cerere de acord trimisă celuilalt participant",
+                );
               }}
             >
-              <Circle className="size-3.5" /> {consent ? "Oprește înregistrarea" : "Cere acordul pentru înregistrare"}
+              <Circle className="size-3.5" />{" "}
+              {consent ? "Oprește înregistrarea" : "Cere acordul pentru înregistrare"}
             </Button>
           </div>
           <RoomDrawer icon={MessageSquare} label="Chat">
@@ -120,12 +140,20 @@ function LessonRoom() {
 
       <footer className="sticky bottom-0 flex flex-wrap items-center justify-center gap-2 border-t border-white/10 bg-black/40 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <Button variant="secondary" size="lg" className="gap-2" onClick={() => setMic(!mic)}>
-          {mic ? <Mic className="size-4" /> : <MicOff className="size-4" />} {mic ? "Microfon" : "Mut"}
+          {mic ? <Mic className="size-4" /> : <MicOff className="size-4" />}{" "}
+          {mic ? "Microfon" : "Mut"}
         </Button>
         <Button variant="secondary" size="lg" className="gap-2" onClick={() => setCam(!cam)}>
           {cam ? <VideoIcon className="size-4" /> : <VideoOff className="size-4" />} Cameră
         </Button>
-        <Button variant="secondary" size="lg" className="gap-2">
+        <Button
+          variant="secondary"
+          size="lg"
+          className="gap-2"
+          onClick={() =>
+            toast.info("Partajarea ecranului devine disponibilă când sala LiveKit este conectată.")
+          }
+        >
           <MonitorUp className="size-4" /> Partajează ecranul
         </Button>
         <Button asChild variant="destructive" size="lg" className="gap-2">
@@ -150,7 +178,10 @@ function RoomDrawer({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start gap-2 border border-white/10 bg-white/5 text-background hover:bg-white/10">
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2 border border-white/10 bg-white/5 text-background hover:bg-white/10"
+        >
           <Icon className="size-4" /> {label}
         </Button>
       </SheetTrigger>

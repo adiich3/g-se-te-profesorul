@@ -11,7 +11,10 @@ export const Route = createFileRoute("/lectie/$lessonId")({
   head: () => ({
     meta: [
       { title: "Detalii lecție · Medito" },
-      { name: "description", content: "Notițe, teme, materiale, progres și înregistrarea ședinței." },
+      {
+        name: "description",
+        content: "Notițe, teme, materiale, progres și înregistrarea ședinței.",
+      },
       { property: "og:title", content: "Detalii lecție · Medito" },
       { property: "og:description", content: "Tot ce a rămas după ședință, într-un singur loc." },
     ],
@@ -21,7 +24,8 @@ export const Route = createFileRoute("/lectie/$lessonId")({
 
 function LessonArchive() {
   const { lessonId } = Route.useParams();
-  const lesson = lessonById(lessonId) ?? lessonById("l1")!;
+  const lesson = lessonById(lessonId);
+  if (!lesson) return <MissingLesson />;
   const tutor = tutorById(lesson.tutorId)!;
   const user = userById(tutor.userId)!;
 
@@ -31,7 +35,8 @@ function LessonArchive() {
         <div className="space-y-8">
           <header>
             <p className="text-sm text-muted-foreground capitalize">
-              {formatDay(lesson.start)}, ora {formatTime(lesson.start)} · {lesson.durationMinutes} min
+              {formatDay(lesson.start)}, ora {formatTime(lesson.start)} · {lesson.durationMinutes}{" "}
+              min
             </p>
             <h1 className="mt-1 text-3xl">
               {subjectById(lesson.subjectId)?.name} cu {user.fullName}
@@ -59,13 +64,17 @@ function LessonArchive() {
 
           <section>
             <h2 className="text-xl">Notițele profesorului</h2>
-            <p className="mt-3 text-muted-foreground">{lesson.notes ?? "Nu au fost adăugate notițe."}</p>
+            <p className="mt-3 text-muted-foreground">
+              {lesson.notes ?? "Nu au fost adăugate notițe."}
+            </p>
           </section>
 
           <section>
             <h2 className="text-xl">Temă</h2>
             {lesson.homework.length === 0 ? (
-              <p className="mt-3 text-sm text-muted-foreground">Fără temă pentru această ședință.</p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Fără temă pentru această ședință.
+              </p>
             ) : (
               <ul className="mt-4 space-y-3">
                 {lesson.homework.map((h) => (
@@ -73,11 +82,17 @@ function LessonArchive() {
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="font-medium">{h.title}</p>
                       <Badge variant="outline" className="font-normal">
-                        {h.status === "de-facut" ? "De făcut" : h.status === "trimisa" ? "Trimisă" : "Corectată"}
+                        {h.status === "de-facut"
+                          ? "De făcut"
+                          : h.status === "trimisa"
+                            ? "Trimisă"
+                            : "Corectată"}
                       </Badge>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">{h.description}</p>
-                    <p className="mt-2 text-xs text-muted-foreground capitalize">Termen: {formatDay(h.dueDate)}</p>
+                    <p className="mt-2 text-xs text-muted-foreground capitalize">
+                      Termen: {formatDay(h.dueDate)}
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -109,18 +124,38 @@ function LessonArchive() {
         <aside className="space-y-6">
           <div className="surface-panel p-5">
             <h2 className="text-lg">Următorul pas</h2>
-            <p className="mt-1.5 text-sm text-muted-foreground">Continuă cu aceeași structură săptămâna viitoare.</p>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Continuă cu aceeași structură săptămâna viitoare.
+            </p>
             <Button asChild className="mt-4 w-full">
-              <Link to="/rezervare/$tutorId" params={{ tutorId: tutor.id }} search={{ slot: undefined }}>
+              <Link
+                to="/rezervare/$tutorId"
+                params={{ tutorId: tutor.id }}
+                search={{ slot: undefined }}
+              >
                 Rezervă următoarea ședință
               </Link>
             </Button>
           </div>
           <IntegrationNote title="În pregătire">
-            Transcriere automată, rezumat al ședinței, capitole pe minute și întrebări de recapitulare — se
-            activează după conectarea procesării audio.
+            Transcriere automată, rezumat al ședinței, capitole pe minute și întrebări de
+            recapitulare — se activează după conectarea procesării audio.
           </IntegrationNote>
         </aside>
+      </div>
+    </AppShell>
+  );
+}
+
+function MissingLesson() {
+  return (
+    <AppShell nav="app">
+      <div className="page-narrow py-20 text-center">
+        <h1 className="text-2xl">Lecția nu a fost găsită</h1>
+        <p className="mt-2 text-muted-foreground">Verifică linkul sau întoarce-te la panoul tău.</p>
+        <Button asChild className="mt-6">
+          <Link to="/dashboard">Mergi la panoul meu</Link>
+        </Button>
       </div>
     </AppShell>
   );

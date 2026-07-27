@@ -18,11 +18,7 @@ export interface User {
   createdAt: string;
 }
 
-export type SchoolLevel =
-  | "gimnaziu"
-  | "liceu"
-  | "facultate"
-  | "adult";
+export type SchoolLevel = "gimnaziu" | "liceu" | "facultate" | "adult";
 
 export type ExamGoal =
   | "bacalaureat"
@@ -120,11 +116,7 @@ export interface AvailabilitySlot {
 }
 
 export type BookingStatus =
-  | "in-asteptare"
-  | "confirmata"
-  | "reprogramata"
-  | "anulata"
-  | "finalizata";
+  "in-asteptare" | "confirmata" | "reprogramata" | "anulata" | "finalizata";
 
 export interface Booking {
   id: string;

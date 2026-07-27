@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { CalendarClock, Heart, Target, Video } from "lucide-react";
 import { AppShell } from "@/components/medito/AppShell";
 import { initials } from "@/components/medito/TutorCard";
@@ -24,9 +25,15 @@ export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
       { title: "Panoul meu · Medito" },
-      { name: "description", content: "Următoarea ședință, lecțiile trecute, obiectivele și progresul tău." },
+      {
+        name: "description",
+        content: "Următoarea ședință, lecțiile trecute, obiectivele și progresul tău.",
+      },
       { property: "og:title", content: "Panoul meu · Medito" },
-      { property: "og:description", content: "Tot ce ține de meditațiile tale, într-un singur loc." },
+      {
+        property: "og:description",
+        content: "Tot ce ține de meditațiile tale, într-un singur loc.",
+      },
     ],
   }),
   component: StudentDashboard,
@@ -54,13 +61,15 @@ function StudentDashboard() {
             <p className="text-sm font-semibold text-primary">Următoarea ședință</p>
             <div className="mt-3 grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
               <div className="min-w-0">
-                <h2 className="text-2xl capitalize">{formatDay(next.start)}, ora {formatTime(next.start)}</h2>
+                <h2 className="text-2xl capitalize">
+                  {formatDay(next.start)}, ora {formatTime(next.start)}
+                </h2>
                 <p className="mt-1.5 text-muted-foreground">
                   {subjectById(next.subjectId)?.name} · {next.topic}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  cu {userById(tutorById(next.tutorId)!.userId)!.fullName} · {next.durationMinutes} min ·{" "}
-                  {next.format === "online" ? "online" : "în persoană"}
+                  cu {userById(tutorById(next.tutorId)!.userId)!.fullName} · {next.durationMinutes}{" "}
+                  min · {next.format === "online" ? "online" : "în persoană"}
                 </p>
               </div>
               <Button asChild size="lg" className="gap-2">
@@ -98,7 +107,9 @@ function StudentDashboard() {
               <h2 className="inline-flex items-center gap-2 text-lg">
                 <Target className="size-4.5 text-primary" /> Obiectivul meu
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground">{demoStudentProfile.desiredOutcome}</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {demoStudentProfile.desiredOutcome}
+              </p>
               <div className="mt-4">
                 <div className="flex items-center justify-between text-sm">
                   <span>
@@ -146,7 +157,9 @@ function StudentDashboard() {
                         </Link>
                         <RatingStars rating={t.rating} className="text-xs" />
                       </div>
-                      <span className="text-sm text-muted-foreground">{formatRON(t.pricePerSession)}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {formatRON(t.pricePerSession)}
+                      </span>
                     </li>
                   );
                 })}
@@ -190,7 +203,9 @@ function BookingRow({ booking }: { booking: Booking }) {
           <p className="font-medium capitalize">
             {formatDay(booking.start)}, {formatTime(booking.start)}
           </p>
-          <Badge className={`${statusStyles[booking.status]} border-0 font-normal hover:opacity-100`}>
+          <Badge
+            className={`${statusStyles[booking.status]} border-0 font-normal hover:opacity-100`}
+          >
             {statusLabels[booking.status]}
           </Badge>
         </div>
@@ -216,7 +231,14 @@ function BookingRow({ booking }: { booking: Booking }) {
                 Reprogramează
               </Link>
             </Button>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground"
+              onClick={() =>
+                toast.info("Anularea va fi disponibilă când rezervările sunt conectate la backend.")
+              }
+            >
               Anulează
             </Button>
           </>

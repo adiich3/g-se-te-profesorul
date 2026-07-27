@@ -16,7 +16,10 @@ export const Route = createFileRoute("/profesor-dashboard")({
   head: () => ({
     meta: [
       { title: "Panou profesor · Medito" },
-      { name: "description", content: "Ședințele de azi, elevii, calendarul, încasările și notițele post-lecție." },
+      {
+        name: "description",
+        content: "Ședințele de azi, elevii, calendarul, încasările și notițele post-lecție.",
+      },
       { property: "og:title", content: "Panou profesor · Medito" },
       { property: "og:description", content: "Gestionează-ți programul și elevii pe Medito." },
     ],
@@ -26,7 +29,9 @@ export const Route = createFileRoute("/profesor-dashboard")({
 
 function TutorDashboard() {
   const tutor = tutorById("t1")!;
-  const mine = bookings.filter((b) => b.tutorId === "t1").sort((a, b) => a.start.localeCompare(b.start));
+  const mine = bookings
+    .filter((b) => b.tutorId === "t1")
+    .sort((a, b) => a.start.localeCompare(b.start));
   const today = mine.filter((b) => b.start.slice(0, 10) === new Date().toISOString().slice(0, 10));
   const upcoming = mine.filter((b) => b.status === "confirmata" || b.status === "in-asteptare");
 
@@ -39,7 +44,11 @@ function TutorDashboard() {
         </p>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          <StatCard icon={CalendarDays} value={String(upcoming.length)} label="Ședințe programate" />
+          <StatCard
+            icon={CalendarDays}
+            value={String(upcoming.length)}
+            label="Ședințe programate"
+          />
           <StatCard icon={Users} value={String(tutorStudents.length)} label="Elevi activi" />
           <StatCard icon={DollarSign} value={formatRON(2340)} label="Încasări luna aceasta" />
         </div>
@@ -50,7 +59,10 @@ function TutorDashboard() {
               <h2 className="text-xl">Programul apropiat</h2>
               <ul className="mt-4 space-y-3">
                 {upcoming.map((b) => (
-                  <li key={b.id} className="surface-panel grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                  <li
+                    key={b.id}
+                    className="surface-panel grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                  >
                     <div className="min-w-0">
                       <p className="font-medium capitalize">
                         {formatDay(b.start)}, {formatTime(b.start)}
@@ -78,7 +90,10 @@ function TutorDashboard() {
               <h2 className="text-xl">Elevii mei</h2>
               <ul className="mt-4 space-y-3">
                 {tutorStudents.map((s) => (
-                  <li key={s.id} className="surface-panel grid gap-2 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                  <li
+                    key={s.id}
+                    className="surface-panel grid gap-2 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                  >
                     <div className="min-w-0">
                       <p className="font-medium">{s.name}</p>
                       <p className="truncate text-sm text-muted-foreground">
@@ -114,7 +129,14 @@ function TutorDashboard() {
                   <Input id="hw" placeholder="Ex.: variantă completă, subiectul II" />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button type="button" variant="outline" className="gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="gap-2"
+                    onClick={() =>
+                      toast.info("Încărcarea materialelor necesită stocare securizată în Supabase.")
+                    }
+                  >
                     <Plus className="size-4" /> Încarcă material
                   </Button>
                   <Button type="submit">Salvează</Button>
@@ -143,7 +165,14 @@ function TutorDashboard() {
                   </li>
                 ))}
               </ul>
-              <Button variant="outline" size="sm" className="mt-4 w-full">
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-4 w-full"
+                onClick={() =>
+                  toast.info("Editarea calendarului necesită salvarea disponibilității în backend.")
+                }
+              >
                 Editează calendarul
               </Button>
             </section>
@@ -157,7 +186,15 @@ function TutorDashboard() {
   );
 }
 
-function StatCard({ icon: Icon, value, label }: { icon: typeof Users; value: string; label: string }) {
+function StatCard({
+  icon: Icon,
+  value,
+  label,
+}: {
+  icon: typeof Users;
+  value: string;
+  label: string;
+}) {
   return (
     <div className="surface-panel flex items-center gap-3 p-5">
       <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">

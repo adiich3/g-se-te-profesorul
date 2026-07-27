@@ -12,7 +12,10 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Autentificare · Medito" },
-      { name: "description", content: "Intră în contul Medito sau creează-ți unul, ca elev sau ca profesor." },
+      {
+        name: "description",
+        content: "Intră în contul Medito sau creează-ți unul, ca elev sau ca profesor.",
+      },
       { property: "og:title", content: "Autentificare · Medito" },
       { property: "og:description", content: "Contul tău Medito pentru meditații 1 la 1." },
     ],
@@ -26,7 +29,9 @@ function AuthPage() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    toast.success("Cont demo activ", { description: "Autentificarea reală se activează odată cu backendul." });
+    toast.success("Cont demo activ", {
+      description: "Autentificarea reală se activează odată cu backendul.",
+    });
     navigate({ to: role === "student" ? "/onboarding" : "/profesor-onboarding" });
   }
 
@@ -44,12 +49,18 @@ function AuthPage() {
               onClick={() => setRole(r)}
               aria-pressed={role === r}
               className={`rounded-xl border p-4 text-left transition-colors ${
-                role === r ? "border-primary bg-primary-soft" : "border-border bg-card hover:border-primary/40"
+                role === r
+                  ? "border-primary bg-primary-soft"
+                  : "border-border bg-card hover:border-primary/40"
               }`}
             >
-              <p className="font-semibold">{r === "student" ? "Sunt elev / student" : "Sunt profesor"}</p>
+              <p className="font-semibold">
+                {r === "student" ? "Sunt elev / student" : "Sunt profesor"}
+              </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                {r === "student" ? "Caut meditații pentru un obiectiv" : "Vreau să primesc elevi noi"}
+                {r === "student"
+                  ? "Caut meditații pentru un obiectiv"
+                  : "Vreau să primesc elevi noi"}
               </p>
             </button>
           ))}
@@ -73,7 +84,7 @@ function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="pass">Parolă</Label>
-                <Input id="pass" type="password" required placeholder="••••••••" />
+                <Input id="pass" type="password" required minLength={8} placeholder="••••••••" />
               </div>
               <Button type="submit" className="w-full" size="lg">
                 Continuă
@@ -93,7 +104,13 @@ function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="pass2">Parolă</Label>
-                <Input id="pass2" type="password" required placeholder="minim 8 caractere" />
+                <Input
+                  id="pass2"
+                  type="password"
+                  required
+                  minLength={8}
+                  placeholder="minim 8 caractere"
+                />
               </div>
               <Button type="submit" className="w-full" size="lg">
                 Creează contul
@@ -103,8 +120,8 @@ function AuthPage() {
         </Tabs>
 
         <IntegrationNote className="mt-6" title="Autentificare demonstrativă">
-          Conturile, sesiunile și rolurile (elev, profesor, administrator, ulterior părinte) se vor conecta la
-          Lovable Cloud. Până atunci poți parcurge tot fluxul cu date demo.
+          Conturile, sesiunile și rolurile (elev, profesor, administrator, ulterior părinte) se vor
+          conecta la Lovable Cloud. Până atunci poți parcurge tot fluxul cu date demo.
         </IntegrationNote>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">

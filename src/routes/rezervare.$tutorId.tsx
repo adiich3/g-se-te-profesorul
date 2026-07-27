@@ -9,7 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { slotsForTutor, subjectById, tutorById, userById } from "@/lib/demo-data";
 import { formatDay, formatRON, formatTime } from "@/lib/matching";
 import { toast } from "sonner";
@@ -21,7 +27,10 @@ export const Route = createFileRoute("/rezervare/$tutorId")({
   head: () => ({
     meta: [
       { title: "Rezervare ședință · Medito" },
-      { name: "description", content: "Alege intervalul, confirmă detaliile lecției și finalizează rezervarea." },
+      {
+        name: "description",
+        content: "Alege intervalul, confirmă detaliile lecției și finalizează rezervarea.",
+      },
       { property: "og:title", content: "Rezervare ședință · Medito" },
       { property: "og:description", content: "Trei pași până la prima ta ședință pe Medito." },
     ],
@@ -59,7 +68,8 @@ function BookingPage() {
   const user = userById(tutor.userId)!;
   const openSlots = slotsForTutor(tutorId).filter((s) => !s.booked);
   const slot = openSlots.find((s) => s.id === slotId);
-  const base = tutor.subjects.find((s) => s.subjectId === subjectId)?.pricePerSession ?? tutor.pricePerSession;
+  const base =
+    tutor.subjects.find((s) => s.subjectId === subjectId)?.pricePerSession ?? tutor.pricePerSession;
   const price = Math.round((base * Number(duration)) / (tutor.lessonDurations[0] || 60));
   const fee = Math.round(price * 0.05);
 
@@ -71,16 +81,18 @@ function BookingPage() {
             <span className="mx-auto grid size-12 place-items-center rounded-full bg-success/10 text-success">
               <Check className="size-6" />
             </span>
-            <h1 className="mt-4 text-2xl">Rezervare confirmată</h1>
+            <h1 className="mt-4 text-2xl">Rezervare demo confirmată</h1>
             <p className="mt-2 text-muted-foreground">
               {user.fullName} · {subjectById(subjectId)?.name}
               <br />
-              {slot ? `${formatDay(slot.start)}, ora ${formatTime(slot.start)}` : "Interval de confirmat"} ·{" "}
-              {duration} min
+              {slot
+                ? `${formatDay(slot.start)}, ora ${formatTime(slot.start)}`
+                : "Interval de confirmat"}{" "}
+              · {duration} min
             </p>
             <p className="mt-4 text-sm text-muted-foreground">
-              Ți-am trimis detaliile pe email (serviciul de email se conectează ulterior). Poți anula sau reprograma
-              gratuit cu până la 12 ore înainte.
+              Nicio plată, rezervare reală sau notificare nu a fost creată. Fluxul va deveni real
+              după conectarea backendului, emailului și Stripe.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg">
@@ -107,7 +119,9 @@ function BookingPage() {
               <li key={s} className="flex items-center gap-2">
                 <span
                   className={`grid size-6 place-items-center rounded-full text-xs font-semibold ${
-                    i <= step ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+                    i <= step
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-muted-foreground"
                   }`}
                 >
                   {i + 1}
@@ -126,7 +140,11 @@ function BookingPage() {
                   Orele afișate sunt în fusul orar al României.
                 </p>
                 <div className="mt-6">
-                  <SlotPicker slots={openSlots} selectedId={slotId} onSelect={(s) => setSlotId(s.id)} />
+                  <SlotPicker
+                    slots={openSlots}
+                    selectedId={slotId}
+                    onSelect={(s) => setSlotId(s.id)}
+                  />
                 </div>
               </>
             )}
@@ -189,7 +207,12 @@ function BookingPage() {
                     <Label htmlFor="card">Card</Label>
                     <div className="relative">
                       <CreditCard className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                      <Input id="card" disabled placeholder="•••• •••• •••• 4242" className="pl-9" />
+                      <Input
+                        id="card"
+                        disabled
+                        placeholder="•••• •••• •••• 4242"
+                        className="pl-9"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -198,8 +221,9 @@ function BookingPage() {
                   </div>
                 </div>
                 <IntegrationNote className="mt-5" title="Câmpuri de plată dezactivate">
-                  Checkoutul este pregătit pentru Stripe: rezervarea creează o intenție de plată, iar confirmarea
-                  profesorului declanșează încasarea și, ulterior, plata către profesor.
+                  Checkoutul este pregătit pentru Stripe: rezervarea creează o intenție de plată,
+                  iar confirmarea profesorului declanșează încasarea și, ulterior, plata către
+                  profesor.
                 </IntegrationNote>
                 <p className="mt-4 inline-flex items-center gap-2 text-xs text-muted-foreground">
                   <Lock className="size-3.5" /> Datele cardului nu sunt stocate de Medito.
@@ -208,13 +232,21 @@ function BookingPage() {
             )}
 
             <div className="mt-8 flex items-center justify-between gap-3">
-              <Button variant="ghost" onClick={() => (step === 0 ? navigate({ to: "/profesor/$tutorId", params: { tutorId } }) : setStep(step - 1))}>
+              <Button
+                variant="ghost"
+                onClick={() =>
+                  step === 0
+                    ? navigate({ to: "/profesor/$tutorId", params: { tutorId } })
+                    : setStep(step - 1)
+                }
+              >
                 Înapoi
               </Button>
               <Button
                 size="lg"
-                disabled={step === 0 && !slotId}
+                disabled={step === 0 && !slot}
                 onClick={() => {
+                  if (step === 0 && !slot) return;
                   if (step < 2) return setStep(step + 1);
                   toast.success("Rezervare trimisă profesorului");
                   setDone(true);
@@ -238,7 +270,10 @@ function BookingPage() {
                 label="Interval"
                 value={slot ? `${formatDay(slot.start)}, ${formatTime(slot.start)}` : "neselectat"}
               />
-              <Row label="Format" value={tutor.format === "in-persoana" ? `În persoană · ${tutor.city}` : "Online"} />
+              <Row
+                label="Format"
+                value={tutor.format === "in-persoana" ? `În persoană · ${tutor.city}` : "Online"}
+              />
             </dl>
             <Separator className="my-4" />
             <dl className="space-y-2.5 text-sm">

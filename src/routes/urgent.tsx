@@ -19,7 +19,10 @@ export const Route = createFileRoute("/urgent")({
         content: "Alege materia și subiectul și vezi profesorii care mai au ore libere astăzi.",
       },
       { property: "og:title", content: "Am nevoie de ajutor azi · Medito" },
-      { property: "og:description", content: "Ședințe rapide, în aceeași zi, cu profesori disponibili acum." },
+      {
+        property: "og:description",
+        content: "Ședințe rapide, în aceeași zi, cu profesori disponibili acum.",
+      },
     ],
   }),
   component: UrgentPage,
@@ -75,7 +78,9 @@ function UrgentPage() {
         </div>
 
         <h2 className="mt-10 text-xl">
-          {matches.length ? `${matches.length} profesori cu ore libere azi` : "Niciun profesor liber azi la materia asta"}
+          {matches.length
+            ? `${matches.length} profesori cu ore libere azi`
+            : "Niciun profesor liber azi la materia asta"}
         </h2>
         <div className="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {matches.map((m) => (

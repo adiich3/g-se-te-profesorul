@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { reviewsForTutor, slotsForTutor, subjectById, tutorById, userById } from "@/lib/demo-data";
 import { examLabel, formatDay, formatRON, formatTime, levelLabel } from "@/lib/matching";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/profesor/$tutorId")({
   loader: ({ params }) => {
@@ -21,13 +22,18 @@ export const Route = createFileRoute("/profesor/$tutorId")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Profil indisponibil · Medito" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [{ title: "Profil indisponibil · Medito" }, { name: "robots", content: "noindex" }],
+      };
     }
     const title = `${loaderData.tutorName} · ${loaderData.headline} | Medito`;
     return {
       meta: [
         { title },
-        { name: "description", content: `Profil, disponibilitate, preț și recenzii pentru ${loaderData.tutorName} pe Medito.` },
+        {
+          name: "description",
+          content: `Profil, disponibilitate, preț și recenzii pentru ${loaderData.tutorName} pe Medito.`,
+        },
         { property: "og:title", content: title },
         { property: "og:description", content: loaderData.headline },
       ],
@@ -41,7 +47,9 @@ function TutorProfilePage() {
   const tutor = tutorById(tutorId)!;
   const user = userById(tutor.userId)!;
   const reviews = reviewsForTutor(tutorId);
-  const slots = slotsForTutor(tutorId).filter((s) => !s.booked).slice(0, 10);
+  const slots = slotsForTutor(tutorId)
+    .filter((s) => !s.booked)
+    .slice(0, 10);
   const [selected, setSelected] = useState<string | undefined>(slots[0]?.id);
 
   return (
@@ -71,7 +79,11 @@ function TutorProfilePage() {
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Monitor className="size-4" />
-                  {tutor.format === "ambele" ? "Online și în persoană" : tutor.format === "online" ? "Online" : "În persoană"}
+                  {tutor.format === "ambele"
+                    ? "Online și în persoană"
+                    : tutor.format === "online"
+                      ? "Online"
+                      : "În persoană"}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Clock className="size-4" /> Răspunde în ~{tutor.responseTimeMinutes} min
@@ -85,7 +97,9 @@ function TutorProfilePage() {
               <div className="text-center">
                 <PlayCircle className="mx-auto size-12 text-muted-foreground" aria-hidden />
                 <p className="mt-3 text-sm font-medium">Video de prezentare</p>
-                <p className="text-sm text-muted-foreground">Se încarcă după activarea stocării video.</p>
+                <p className="text-sm text-muted-foreground">
+                  Se încarcă după activarea stocării video.
+                </p>
               </div>
             </div>
           </section>
@@ -113,7 +127,9 @@ function TutorProfilePage() {
                       </Badge>
                     ))}
                   </div>
-                  <p className="mt-3 text-sm font-medium">{formatRON(s.pricePerSession)} / ședință</p>
+                  <p className="mt-3 text-sm font-medium">
+                    {formatRON(s.pricePerSession)} / ședință
+                  </p>
                 </div>
               ))}
             </div>
@@ -144,7 +160,9 @@ function TutorProfilePage() {
           <section>
             <h2 className="text-xl">Recenzii</h2>
             {reviews.length === 0 ? (
-              <p className="mt-3 text-sm text-muted-foreground">Încă nu există recenzii pentru acest profesor.</p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Încă nu există recenzii pentru acest profesor.
+              </p>
             ) : (
               <ul className="mt-4 space-y-4">
                 {reviews.map((r) => (
@@ -167,7 +185,9 @@ function TutorProfilePage() {
           <div className="surface-panel p-5">
             <div className="flex items-end justify-between">
               <div>
-                <p className="font-display text-2xl font-semibold">{formatRON(tutor.pricePerSession)}</p>
+                <p className="font-display text-2xl font-semibold">
+                  {formatRON(tutor.pricePerSession)}
+                </p>
                 <p className="text-sm text-muted-foreground">per ședință</p>
               </div>
               <div className="text-right text-sm text-muted-foreground">
@@ -187,7 +207,16 @@ function TutorProfilePage() {
                 Rezervă ședința
               </Link>
             </Button>
-            <Button variant="outline" size="lg" className="mt-2 w-full gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              className="mt-2 w-full gap-2"
+              onClick={() =>
+                toast.info(
+                  "Mesageria va fi disponibilă după autentificare. Nu a fost trimis niciun mesaj.",
+                )
+              }
+            >
               <MessageCircle className="size-4" /> Trimite un mesaj
             </Button>
 
@@ -198,7 +227,8 @@ function TutorProfilePage() {
             )}
 
             <IntegrationNote className="mt-4" title="Plata se face la confirmare">
-              Procesatorul de plăți (Stripe) se conectează ulterior; acum poți parcurge fluxul complet.
+              Procesatorul de plăți (Stripe) se conectează ulterior; acum poți parcurge fluxul
+              complet.
             </IntegrationNote>
           </div>
         </aside>

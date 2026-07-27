@@ -22,7 +22,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Medito · Meditații 1 la 1 pentru obiective clare" },
       {
         property: "og:description",
-        content: "Bacalaureat, Evaluare Națională, admitere, limbi străine și materii de facultate.",
+        content:
+          "Bacalaureat, Evaluare Națională, admitere, limbi străine și materii de facultate.",
       },
     ],
   }),
@@ -70,15 +71,18 @@ function Landing() {
       {/* Hero */}
       <section className="page-container grid items-center gap-10 py-12 md:py-20 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
         <div>
-          <Badge variant="outline" className="gap-1.5 border-primary/30 bg-primary-soft text-primary">
+          <Badge
+            variant="outline"
+            className="gap-1.5 border-primary/30 bg-primary-soft text-primary"
+          >
             <Sparkles className="size-3.5" /> Profesori verificați din toată țara
           </Badge>
           <h1 className="mt-5 text-4xl leading-[1.08] sm:text-5xl lg:text-[3.4rem]">
             Găsește profesorul potrivit pentru obiectivul tău
           </h1>
           <p className="mt-4 max-w-xl text-lg text-muted-foreground">
-            Nu căuta anunțuri. Spune ce ai de recuperat, ce notă vrei și când poți învăța — îți arătăm
-            profesorii care chiar se potrivesc.
+            Nu căuta anunțuri. Spune ce ai de recuperat, ce notă vrei și când poți învăța — îți
+            arătăm profesorii care chiar se potrivesc.
           </p>
 
           <form
@@ -109,7 +113,10 @@ function Landing() {
                 Răspunde la 6 întrebări <ArrowRight className="size-4" />
               </Link>
             </Button>
-            <Link to="/urgent" className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline">
+            <Link
+              to="/urgent"
+              className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline"
+            >
               <Zap className="size-4" /> Am nevoie de ajutor azi
             </Link>
           </div>
@@ -179,7 +186,9 @@ function Landing() {
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
           <div className="min-w-0">
             <h2 className="text-2xl">Profesori recomandați</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Selecție din comunitatea Medito (date demo).</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Selecție din comunitatea Medito (date demo).
+            </p>
           </div>
           <Button asChild variant="ghost" size="sm">
             <Link to="/cauta">Vezi toți</Link>
@@ -198,7 +207,8 @@ function Landing() {
           <div>
             <h2 className="text-xl">Predai? Primește elevi potriviți.</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Îți construiești profilul, îți setezi calendarul și primești rezervări. Fără comisioane ascunse.
+              Îți construiești profilul, îți setezi calendarul și primești rezervări. Fără
+              comisioane ascunse.
             </p>
           </div>
           <Button asChild size="lg">

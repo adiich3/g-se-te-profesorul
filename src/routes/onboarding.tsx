@@ -21,7 +21,8 @@ export const Route = createFileRoute("/onboarding")({
       { title: "Spune-ne obiectivul tău · Medito" },
       {
         name: "description",
-        content: "Șase pași scurți despre clasă, materie, obiectiv, buget și program, apoi primești potriviri.",
+        content:
+          "Șase pași scurți despre clasă, materie, obiectiv, buget și program, apoi primești potriviri.",
       },
       { property: "og:title", content: "Spune-ne obiectivul tău · Medito" },
       { property: "og:description", content: "Potriviri de profesori pe baza nevoii tale reale." },
@@ -74,6 +75,7 @@ function Onboarding() {
   const matches = findMatches(criteria).slice(0, 6);
 
   function next() {
+    if (step === TOTAL && days.length === 0) return;
     if (step === TOTAL) {
       saveNeed(criteria);
       setStep(TOTAL + 1);
@@ -91,8 +93,9 @@ function Onboarding() {
           </span>
           <h1 className="mt-4 text-3xl">Profesori potriviți pentru tine</h1>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            {subjects.find((s) => s.id === subjectId)?.name} · {levelLabel(level)} · {examLabel(goal)} · buget până
-            la {budget[1]} RON · {days.map((d) => DAY_NAMES[d - 1]).join(", ")} după {fromHour}:00
+            {subjects.find((s) => s.id === subjectId)?.name} · {levelLabel(level)} ·{" "}
+            {examLabel(goal)} · buget până la {budget[1]} RON ·{" "}
+            {days.map((d) => DAY_NAMES[d - 1]).join(", ")} după {fromHour}:00
           </p>
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {matches.map((m) => (
@@ -119,7 +122,11 @@ function Onboarding() {
           <span>
             Pasul {step} din {TOTAL}
           </span>
-          <button type="button" onClick={() => navigate({ to: "/" })} className="hover:text-foreground">
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/" })}
+            className="hover:text-foreground"
+          >
             Renunță
           </button>
         </div>
@@ -127,7 +134,10 @@ function Onboarding() {
 
         <div className="surface-panel mt-8 p-6 sm:p-8">
           {step === 1 && (
-            <Step title="În ce clasă ești?" hint="Ne ajută să filtrăm profesorii cu experiență pe nivelul tău.">
+            <Step
+              title="În ce clasă ești?"
+              hint="Ne ajută să filtrăm profesorii cu experiență pe nivelul tău."
+            >
               <ChoiceGrid
                 options={levels.map((l) => ({ value: l, label: capitalize(levelLabel(l)) }))}
                 value={level}
@@ -141,7 +151,10 @@ function Onboarding() {
           )}
 
           {step === 2 && (
-            <Step title="La ce materie ai nevoie de ajutor?" hint="Poți adăuga altele mai târziu din profil.">
+            <Step
+              title="La ce materie ai nevoie de ajutor?"
+              hint="Poți adăuga altele mai târziu din profil."
+            >
               <ChoiceGrid
                 options={subjects.map((s) => ({ value: s.id, label: s.name }))}
                 value={subjectId}
@@ -152,15 +165,28 @@ function Onboarding() {
           )}
 
           {step === 3 && (
-            <Step title="Unde ești acum și unde vrei să ajungi?" hint="Notele ne ajută să calibrăm ritmul.">
+            <Step
+              title="Unde ești acum și unde vrei să ajungi?"
+              hint="Notele ne ajută să calibrăm ritmul."
+            >
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="cur">Nota actuală / la simulare</Label>
-                  <Input id="cur" inputMode="decimal" value={current} onChange={(e) => setCurrent(e.target.value)} />
+                  <Input
+                    id="cur"
+                    inputMode="decimal"
+                    value={current}
+                    onChange={(e) => setCurrent(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="tgt">Nota țintă</Label>
-                  <Input id="tgt" inputMode="decimal" value={target} onChange={(e) => setTarget(e.target.value)} />
+                  <Input
+                    id="tgt"
+                    inputMode="decimal"
+                    value={target}
+                    onChange={(e) => setTarget(e.target.value)}
+                  />
                 </div>
               </div>
               <div className="mt-5">
@@ -185,7 +211,10 @@ function Onboarding() {
           )}
 
           {step === 4 && (
-            <Step title="Cum preferi să înveți?" hint="Pentru ședințe fizice avem nevoie și de oraș.">
+            <Step
+              title="Cum preferi să înveți?"
+              hint="Pentru ședințe fizice avem nevoie și de oraș."
+            >
               <ChoiceGrid
                 options={[
                   { value: "online", label: "Online" },
@@ -206,7 +235,10 @@ function Onboarding() {
           )}
 
           {step === 5 && (
-            <Step title="Ce buget ai per ședință?" hint="Îți arătăm întâi profesorii care se încadrează.">
+            <Step
+              title="Ce buget ai per ședință?"
+              hint="Îți arătăm întâi profesorii care se încadrează."
+            >
               <div className="rounded-xl border border-border p-5">
                 <p className="text-2xl font-semibold">
                   {budget[0]} – {budget[1]} RON
@@ -234,7 +266,10 @@ function Onboarding() {
           )}
 
           {step === 6 && (
-            <Step title="Când poți avea ședințe?" hint="Selectează zilele și ora de la care ești liber.">
+            <Step
+              title="Când poți avea ședințe?"
+              hint="Selectează zilele și ora de la care ești liber."
+            >
               <div className="flex flex-wrap gap-2">
                 {DAY_NAMES.map((d, i) => {
                   const day = i + 1;
@@ -244,10 +279,14 @@ function Onboarding() {
                       key={d}
                       type="button"
                       aria-pressed={active}
-                      onClick={() => setDays((prev) => (active ? prev.filter((x) => x !== day) : [...prev, day]))}
+                      onClick={() =>
+                        setDays((prev) => (active ? prev.filter((x) => x !== day) : [...prev, day]))
+                      }
                       className={cn(
                         "rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors",
-                        active ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary/50",
+                        active
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border hover:border-primary/50",
                       )}
                     >
                       {d}
@@ -257,8 +296,17 @@ function Onboarding() {
               </div>
               <div className="mt-6 rounded-xl border border-border p-5">
                 <Label className="mb-3 block">Sunt liber de la ora {fromHour}:00</Label>
-                <Slider value={[fromHour]} onValueChange={(v) => setFromHour(v[0])} min={8} max={21} step={1} />
+                <Slider
+                  value={[fromHour]}
+                  onValueChange={(v) => setFromHour(v[0])}
+                  min={8}
+                  max={21}
+                  step={1}
+                />
               </div>
+              {days.length === 0 && (
+                <p className="mt-3 text-sm text-destructive">Selectează cel puțin o zi.</p>
+              )}
             </Step>
           )}
 
@@ -271,7 +319,12 @@ function Onboarding() {
             >
               <ArrowLeft className="size-4" /> Înapoi
             </Button>
-            <Button onClick={next} size="lg" className="gap-1">
+            <Button
+              onClick={next}
+              size="lg"
+              className="gap-1"
+              disabled={step === TOTAL && days.length === 0}
+            >
               {step === TOTAL ? "Vezi potrivirile" : "Continuă"} <ArrowRight className="size-4" />
             </Button>
           </div>
@@ -281,7 +334,15 @@ function Onboarding() {
   );
 }
 
-function Step({ title, hint, children }: { title: string; hint: string; children: React.ReactNode }) {
+function Step({
+  title,
+  hint,
+  children,
+}: {
+  title: string;
+  hint: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <h1 className="text-2xl">{title}</h1>
@@ -319,7 +380,9 @@ function ChoiceGrid({
           onClick={() => onChange(o.value)}
           className={cn(
             "rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors",
-            value === o.value ? "border-primary bg-primary-soft text-primary" : "border-border hover:border-primary/40",
+            value === o.value
+              ? "border-primary bg-primary-soft text-primary"
+              : "border-border hover:border-primary/40",
           )}
         >
           {o.label}

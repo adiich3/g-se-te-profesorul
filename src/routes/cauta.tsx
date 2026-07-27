@@ -8,7 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { subjects } from "@/lib/demo-data";
 import { examLabel, findMatches, levelLabel } from "@/lib/matching";
@@ -24,10 +30,14 @@ export const Route = createFileRoute("/cauta")({
       { title: "Caută profesori · Medito" },
       {
         name: "description",
-        content: "Filtrează profesori după materie, nivel, examen, preț, format, oraș și disponibilitate.",
+        content:
+          "Filtrează profesori după materie, nivel, examen, preț, format, oraș și disponibilitate.",
       },
       { property: "og:title", content: "Caută profesori · Medito" },
-      { property: "og:description", content: "Rezultate ordonate după cât de bine se potrivesc cu nevoia ta." },
+      {
+        property: "og:description",
+        content: "Rezultate ordonate după cât de bine se potrivesc cu nevoia ta.",
+      },
     ],
   }),
   component: SearchPage,
@@ -75,11 +85,40 @@ function SearchPage() {
     <div className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="q">Caută</Label>
-        <Input id="q" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Nume, specializare…" />
+        <Input
+          id="q"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Nume, specializare…"
+        />
       </div>
-      <FilterSelect label="Materie" value={subjectId} onChange={setSubjectId} options={[["toate", "Toate materiile"], ...subjects.map((s) => [s.id, s.name] as [string, string])]} />
-      <FilterSelect label="Nivel" value={level} onChange={setLevel} options={[["toate", "Toate nivelurile"], ...levels.map((l) => [l, capitalize(levelLabel(l))] as [string, string])]} />
-      <FilterSelect label="Examen" value={exam} onChange={setExam} options={[["toate", "Toate examenele"], ...exams.map((e) => [e, examLabel(e)] as [string, string])]} />
+      <FilterSelect
+        label="Materie"
+        value={subjectId}
+        onChange={setSubjectId}
+        options={[
+          ["toate", "Toate materiile"],
+          ...subjects.map((s) => [s.id, s.name] as [string, string]),
+        ]}
+      />
+      <FilterSelect
+        label="Nivel"
+        value={level}
+        onChange={setLevel}
+        options={[
+          ["toate", "Toate nivelurile"],
+          ...levels.map((l) => [l, capitalize(levelLabel(l))] as [string, string]),
+        ]}
+      />
+      <FilterSelect
+        label="Examen"
+        value={exam}
+        onChange={setExam}
+        options={[
+          ["toate", "Toate examenele"],
+          ...exams.map((e) => [e, examLabel(e)] as [string, string]),
+        ]}
+      />
       <FilterSelect
         label="Format"
         value={format}
@@ -93,7 +132,12 @@ function SearchPage() {
       {format === "in-persoana" && (
         <div className="space-y-2">
           <Label htmlFor="city">Oraș</Label>
-          <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Ex.: Cluj-Napoca" />
+          <Input
+            id="city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="Ex.: Cluj-Napoca"
+          />
         </div>
       )}
       <div className="space-y-3">
@@ -124,7 +168,8 @@ function SearchPage() {
       <div className="page-container py-8">
         <h1 className="text-3xl">Profesori disponibili</h1>
         <p className="mt-1.5 text-muted-foreground">
-          {matches.length} {matches.length === 1 ? "profesor găsit" : "profesori găsiți"} · ordonați după potrivire
+          {matches.length} {matches.length === 1 ? "profesor găsit" : "profesori găsiți"} · ordonați
+          după potrivire
         </p>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[17rem_minmax(0,1fr)]">

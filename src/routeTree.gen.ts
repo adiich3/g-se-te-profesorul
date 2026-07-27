@@ -9,53 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UrgentRouteImport } from './routes/urgent'
-import { Route as ProfesorOnboardingRouteImport } from './routes/profesor-onboarding'
-import { Route as ProfesorDashboardRouteImport } from './routes/profesor-dashboard'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as CautaRouteImport } from './routes/cauta'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SedintaLessonIdRouteImport } from './routes/sedinta.$lessonId'
-import { Route as RezervareTutorIdRouteImport } from './routes/rezervare.$tutorId'
-import { Route as ProfesorTutorIdRouteImport } from './routes/profesor.$tutorId'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CautaRouteImport } from './routes/cauta'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as ProfesorDashboardRouteImport } from './routes/profesor-dashboard'
+import { Route as ProfesorOnboardingRouteImport } from './routes/profesor-onboarding'
+import { Route as UrgentRouteImport } from './routes/urgent'
 import { Route as LectieLessonIdRouteImport } from './routes/lectie.$lessonId'
+import { Route as ProfesorTutorIdRouteImport } from './routes/profesor.$tutorId'
+import { Route as RezervareTutorIdRouteImport } from './routes/rezervare.$tutorId'
+import { Route as SedintaLessonIdRouteImport } from './routes/sedinta.$lessonId'
 
-const UrgentRoute = UrgentRouteImport.update({
-  id: '/urgent',
-  path: '/urgent',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfesorOnboardingRoute = ProfesorOnboardingRouteImport.update({
-  id: '/profesor-onboarding',
-  path: '/profesor-onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfesorDashboardRoute = ProfesorDashboardRouteImport.update({
-  id: '/profesor-dashboard',
-  path: '/profesor-dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CautaRoute = CautaRouteImport.update({
-  id: '/cauta',
-  path: '/cauta',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -63,19 +33,44 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SedintaLessonIdRoute = SedintaLessonIdRouteImport.update({
-  id: '/sedinta/$lessonId',
-  path: '/sedinta/$lessonId',
+const CautaRoute = CautaRouteImport.update({
+  id: '/cauta',
+  path: '/cauta',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RezervareTutorIdRoute = RezervareTutorIdRouteImport.update({
-  id: '/rezervare/$tutorId',
-  path: '/rezervare/$tutorId',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfesorDashboardRoute = ProfesorDashboardRouteImport.update({
+  id: '/profesor-dashboard',
+  path: '/profesor-dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfesorOnboardingRoute = ProfesorOnboardingRouteImport.update({
+  id: '/profesor-onboarding',
+  path: '/profesor-onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UrgentRoute = UrgentRouteImport.update({
+  id: '/urgent',
+  path: '/urgent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LectieLessonIdRoute = LectieLessonIdRouteImport.update({
+  id: '/lectie/$lessonId',
+  path: '/lectie/$lessonId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfesorTutorIdRoute = ProfesorTutorIdRouteImport.update({
@@ -83,9 +78,14 @@ const ProfesorTutorIdRoute = ProfesorTutorIdRouteImport.update({
   path: '/profesor/$tutorId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LectieLessonIdRoute = LectieLessonIdRouteImport.update({
-  id: '/lectie/$lessonId',
-  path: '/lectie/$lessonId',
+const RezervareTutorIdRoute = RezervareTutorIdRouteImport.update({
+  id: '/rezervare/$tutorId',
+  path: '/rezervare/$tutorId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SedintaLessonIdRoute = SedintaLessonIdRouteImport.update({
+  id: '/sedinta/$lessonId',
+  path: '/sedinta/$lessonId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -201,53 +201,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/urgent': {
-      id: '/urgent'
-      path: '/urgent'
-      fullPath: '/urgent'
-      preLoaderRoute: typeof UrgentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profesor-onboarding': {
-      id: '/profesor-onboarding'
-      path: '/profesor-onboarding'
-      fullPath: '/profesor-onboarding'
-      preLoaderRoute: typeof ProfesorOnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profesor-dashboard': {
-      id: '/profesor-dashboard'
-      path: '/profesor-dashboard'
-      fullPath: '/profesor-dashboard'
-      preLoaderRoute: typeof ProfesorDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cauta': {
-      id: '/cauta'
-      path: '/cauta'
-      fullPath: '/cauta'
-      preLoaderRoute: typeof CautaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -257,25 +215,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sedinta/$lessonId': {
-      id: '/sedinta/$lessonId'
-      path: '/sedinta/$lessonId'
-      fullPath: '/sedinta/$lessonId'
-      preLoaderRoute: typeof SedintaLessonIdRouteImport
+    '/cauta': {
+      id: '/cauta'
+      path: '/cauta'
+      fullPath: '/cauta'
+      preLoaderRoute: typeof CautaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/rezervare/$tutorId': {
-      id: '/rezervare/$tutorId'
-      path: '/rezervare/$tutorId'
-      fullPath: '/rezervare/$tutorId'
-      preLoaderRoute: typeof RezervareTutorIdRouteImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profesor-dashboard': {
+      id: '/profesor-dashboard'
+      path: '/profesor-dashboard'
+      fullPath: '/profesor-dashboard'
+      preLoaderRoute: typeof ProfesorDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profesor-onboarding': {
+      id: '/profesor-onboarding'
+      path: '/profesor-onboarding'
+      fullPath: '/profesor-onboarding'
+      preLoaderRoute: typeof ProfesorOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/urgent': {
+      id: '/urgent'
+      path: '/urgent'
+      fullPath: '/urgent'
+      preLoaderRoute: typeof UrgentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lectie/$lessonId': {
+      id: '/lectie/$lessonId'
+      path: '/lectie/$lessonId'
+      fullPath: '/lectie/$lessonId'
+      preLoaderRoute: typeof LectieLessonIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profesor/$tutorId': {
@@ -285,11 +278,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfesorTutorIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lectie/$lessonId': {
-      id: '/lectie/$lessonId'
-      path: '/lectie/$lessonId'
-      fullPath: '/lectie/$lessonId'
-      preLoaderRoute: typeof LectieLessonIdRouteImport
+    '/rezervare/$tutorId': {
+      id: '/rezervare/$tutorId'
+      path: '/rezervare/$tutorId'
+      fullPath: '/rezervare/$tutorId'
+      preLoaderRoute: typeof RezervareTutorIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sedinta/$lessonId': {
+      id: '/sedinta/$lessonId'
+      path: '/sedinta/$lessonId'
+      fullPath: '/sedinta/$lessonId'
+      preLoaderRoute: typeof SedintaLessonIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -313,3 +313,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
