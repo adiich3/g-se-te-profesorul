@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell } from "@/components/medito/AppShell";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { user, accountRoute, loading: authLoading } = useAuth();
 
   const [role, setRole] = useState<"student" | "tutor">("student");
   const [loading, setLoading] = useState(false);
@@ -57,29 +59,22 @@ function AuthPage() {
       return;
     }
 
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", data.user.id)
-      .single();
+      .maybeSingle();
 
     setLoading(false);
 
-    if (profileError || !profile) {
-      toast.error("Profilul nu a fost găsit", {
-        description: profileError?.message,
-      });
-
-      return;
-    }
+    const role =
+      profile?.role ?? (data.user.user_metadata?.role as string | undefined) ?? "student";
 
     toast.success("Te-ai autentificat");
 
     navigate({
-      to:
-        profile.role === "tutor"
-          ? "/profesor-dashboard"
-          : "/dashboard",
+      to: role === "tutor" ? "/profesor-dashboard" : "/dashboard",
+      replace: true,
     });
   }
 
@@ -144,6 +139,10 @@ function AuthPage() {
           ? "/onboarding"
           : "/profesor-onboarding",
     });
+  }
+
+  if (!authLoading && user) {
+    return <Navigate to={accountRoute} replace />;
   }
 
   return (

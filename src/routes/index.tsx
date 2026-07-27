@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ArrowRight, CalendarCheck, Search, Sparkles, Video, Zap } from "lucide-react";
 import heroImage from "@/assets/hero-medito.jpg";
 import { AppShell } from "@/components/medito/AppShell";
+import { useAuth } from "@/hooks/use-auth";
 import { TutorCard } from "@/components/medito/TutorCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,6 +64,7 @@ const steps = [
 
 function Landing() {
   const navigate = useNavigate();
+  const { user, accountRoute } = useAuth();
   const [need, setNeed] = useState("");
   const curated = findMatches({}).slice(0, 3);
 
@@ -109,9 +111,15 @@ function Landing() {
 
           <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
             <Button asChild variant="secondary" size="sm">
-              <Link to="/onboarding">
-                Răspunde la 6 întrebări <ArrowRight className="size-4" />
-              </Link>
+              {user ? (
+                <Link to={accountRoute}>
+                  Mergi la panoul meu <ArrowRight className="size-4" />
+                </Link>
+              ) : (
+                <Link to="/onboarding">
+                  Răspunde la 6 întrebări <ArrowRight className="size-4" />
+                </Link>
+              )}
             </Button>
             <Link
               to="/urgent"
