@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CalendarClock, Video } from "lucide-react";
+import { CalendarClock, MessageCircle, Video } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/medito/AppShell";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase/client";
+import { getOrCreateConversation } from "@/lib/conversations";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -246,6 +247,27 @@ function BookingRow({
   booking: StudentBooking;
   onCancel: (id: string) => Promise<void>;
 }) {
+  const { user } = useAuth();
+  const navigate = Route.useNavigate();
+
+  async function openConversation() {
+    if (!user) return;
+
+    try {
+      const conversationId = await getOrCreateConversation(
+        user.id,
+        booking.tutor_id,
+      );
+
+      await navigate({
+        to: "/mesaje/$conversationId",
+        params: { conversationId },
+      });
+    } catch (error) {
+      console.error("Open conversation error:", error);
+      toast.error("Conversația nu a putut fi deschisă.");
+    }
+  }
   return (
     <li className="surface-panel grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
       <div>
@@ -268,6 +290,16 @@ function BookingRow({
       </div>
 
       <div className="flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-1.5"
+          onClick={() => void openConversation()}
+        >
+          <MessageCircle className="size-4" />
+          Mesaj
+        </Button>
+
         {booking.status === "confirmed" && (
           <Button asChild size="sm">
             <Link

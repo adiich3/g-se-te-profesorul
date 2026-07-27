@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, Check, Users, Video, X } from "lucide-react";
+import { CalendarDays, Check, MessageCircle, Users, Video, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/medito/AppShell";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase/client";
+import { getOrCreateConversation } from "@/lib/conversations";
 
 export const Route = createFileRoute("/_authenticated/profesor-dashboard")({
   head: () => ({
@@ -35,6 +36,7 @@ type TutorBooking = {
 
 function TutorDashboard() {
   const { user, profile } = useAuth();
+  const navigate = Route.useNavigate();
 
   const [bookings, setBookings] = useState<TutorBooking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -135,6 +137,25 @@ function TutorDashboard() {
       name,
     }));
   }, [bookings]);
+
+  async function openConversation(studentId: string) {
+    if (!user) return;
+
+    try {
+      const conversationId = await getOrCreateConversation(
+        studentId,
+        user.id,
+      );
+
+      await navigate({
+        to: "/mesaje/$conversationId",
+        params: { conversationId },
+      });
+    } catch (error) {
+      console.error("Open conversation error:", error);
+      toast.error("Conversația nu a putut fi deschisă.");
+    }
+  }
 
   async function updateStatus(
     bookingId: string,
@@ -242,6 +263,18 @@ function TutorDashboard() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-1.5"
+                      onClick={() =>
+                        void openConversation(booking.student_id)
+                      }
+                    >
+                      <MessageCircle className="size-4" />
+                      Mesaj
+                    </Button>
+
                     {booking.status === "pending" && (
                       <>
                         <Button

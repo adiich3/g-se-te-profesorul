@@ -23,6 +23,7 @@ import { Route as ProfesorTutorIdRouteImport } from './routes/profesor.$tutorId'
 import { Route as LectieLessonIdRouteImport } from './routes/lectie.$lessonId'
 import { Route as AuthenticatedProfesorDashboardRouteImport } from './routes/_authenticated/profesor-dashboard'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedMesajeConversationIdRouteImport } from './routes/_authenticated/mesaje.$conversationId'
 
 const UrgentRoute = UrgentRouteImport.update({
   id: '/urgent',
@@ -94,6 +95,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMesajeConversationIdRoute =
+  AuthenticatedMesajeConversationIdRouteImport.update({
+    id: '/mesaje/$conversationId',
+    path: '/mesaje/$conversationId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
   '/sedinta/$lessonId': typeof SedintaLessonIdRoute
+  '/mesaje/$conversationId': typeof AuthenticatedMesajeConversationIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,6 +132,7 @@ export interface FileRoutesByTo {
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
   '/sedinta/$lessonId': typeof SedintaLessonIdRoute
+  '/mesaje/$conversationId': typeof AuthenticatedMesajeConversationIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,6 +150,7 @@ export interface FileRoutesById {
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
   '/sedinta/$lessonId': typeof SedintaLessonIdRoute
+  '/_authenticated/mesaje/$conversationId': typeof AuthenticatedMesajeConversationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
     | '/sedinta/$lessonId'
+    | '/mesaje/$conversationId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
     | '/sedinta/$lessonId'
+    | '/mesaje/$conversationId'
   id:
     | '__root__'
     | '/'
@@ -189,6 +201,7 @@ export interface FileRouteTypes {
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
     | '/sedinta/$lessonId'
+    | '/_authenticated/mesaje/$conversationId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -306,17 +319,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/mesaje/$conversationId': {
+      id: '/_authenticated/mesaje/$conversationId'
+      path: '/mesaje/$conversationId'
+      fullPath: '/mesaje/$conversationId'
+      preLoaderRoute: typeof AuthenticatedMesajeConversationIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedProfesorDashboardRoute: typeof AuthenticatedProfesorDashboardRoute
+  AuthenticatedMesajeConversationIdRoute: typeof AuthenticatedMesajeConversationIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedProfesorDashboardRoute: AuthenticatedProfesorDashboardRoute,
+  AuthenticatedMesajeConversationIdRoute:
+    AuthenticatedMesajeConversationIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
