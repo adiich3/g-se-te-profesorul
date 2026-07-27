@@ -12,7 +12,7 @@ import { bookings, subjectById, tutorById, tutorStudents } from "@/lib/demo-data
 import { DAY_NAMES, formatDay, formatRON, formatTime } from "@/lib/matching";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/profesor-dashboard")({
+export const Route = createFileRoute("/_authenticated/profesor-dashboard")({
   head: () => ({
     meta: [
       { title: "Panou profesor · Medito" },
