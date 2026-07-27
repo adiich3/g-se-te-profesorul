@@ -37,29 +37,49 @@ function AuthPage() {
     e.preventDefault();
 
     const form = new FormData(e.currentTarget);
-    const email = String(form.get("email") ?? "");
+    const email = String(form.get("email") ?? "").trim();
     const password = String(form.get("password") ?? "");
 
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
+
       toast.error("Autentificarea a eșuat", {
         description: error.message,
       });
+
+      return;
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+
+    setLoading(false);
+
+    if (profileError || !profile) {
+      toast.error("Profilul nu a fost găsit", {
+        description: profileError?.message,
+      });
+
       return;
     }
 
     toast.success("Te-ai autentificat");
 
     navigate({
-      to: role === "student" ? "/dashboard" : "/profesor-dashboard",
+      to:
+        profile.role === "tutor"
+          ? "/profesor-dashboard"
+          : "/dashboard",
     });
   }
 
@@ -68,8 +88,8 @@ function AuthPage() {
 
     const form = new FormData(e.currentTarget);
 
-    const name = String(form.get("name") ?? "");
-    const email = String(form.get("email") ?? "");
+    const name = String(form.get("name") ?? "").trim();
+    const email = String(form.get("email") ?? "").trim();
     const password = String(form.get("password") ?? "");
 
     setLoading(true);
@@ -85,12 +105,40 @@ function AuthPage() {
       },
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
+
       toast.error("Crearea contului a eșuat", {
         description: error.message,
       });
+
+      return;
+    }
+
+    if (!data.user) {
+      setLoading(false);
+
+      toast.error("Contul nu a fost creat");
+
+      return;
+    }
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .upsert({
+        id: data.user.id,
+        email,
+        role,
+        full_name: name,
+      });
+
+    setLoading(false);
+
+    if (profileError) {
+      toast.error("Contul a fost creat, dar profilul nu a fost salvat", {
+        description: profileError.message,
+      });
+
       return;
     }
 
@@ -98,13 +146,17 @@ function AuthPage() {
       toast.success("Cont creat", {
         description: "Verifică emailul pentru confirmarea contului.",
       });
+
       return;
     }
 
     toast.success("Cont creat");
 
     navigate({
-      to: role === "student" ? "/onboarding" : "/profesor-onboarding",
+      to:
+        role === "student"
+          ? "/onboarding"
+          : "/profesor-onboarding",
     });
   }
 
