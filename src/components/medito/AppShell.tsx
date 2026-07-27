@@ -8,8 +8,8 @@ import {
   User,
   Zap,
 } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
+import { type ReactNode } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
@@ -20,19 +20,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/lib/supabase/client";
+import { useAuth, type AppRole } from "@/hooks/use-auth";
 
 type NavItem = {
   to: string;
   label: string;
   icon: typeof Compass;
-};
-
-type Profile = {
-  id: string;
-  email: string | null;
-  role: string;
-  full_name: string | null;
 };
 
 const publicNav: NavItem[] = [
@@ -45,10 +38,15 @@ const studentNav: NavItem[] = [
   { to: "/cauta", label: "Caută", icon: Compass },
   { to: "/urgent", label: "Ajutor azi", icon: Zap },
   {
-    to: "/profesor-dashboard",
+    to: "/profesor-onboarding",
     label: "Sunt profesor",
     icon: CalendarDays,
   },
+];
+
+const tutorNav: NavItem[] = [
+  { to: "/profesor-dashboard", label: "Panou profesor", icon: LayoutDashboard },
+  { to: "/cauta", label: "Caută", icon: Compass },
 ];
 
 export function AppShell({
@@ -63,89 +61,18 @@ export function AppShell({
   className?: string;
 }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { user, role, displayName, accountRoute, loading: authLoading, signOut } = useAuth();
 
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
-
-  const items = nav === "public" ? publicNav : studentNav;
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadProfile(currentUser: SupabaseUser | null) {
-      if (!mounted) {
-        return;
-      }
-
-      setUser(currentUser);
-
-      if (!currentUser) {
-        setProfile(null);
-        setAuthLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, email, role, full_name")
-        .eq("id", currentUser.id)
-        .maybeSingle();
-
-      if (!mounted) {
-        return;
-      }
-
-      if (error) {
-        console.error("Eroare la încărcarea profilului:", error);
-        setProfile(null);
-      } else {
-        setProfile(data);
-      }
-
-      setAuthLoading(false);
-    }
-
-    supabase.auth.getUser().then(({ data }) => {
-      void loadProfile(data.user);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      void loadProfile(session?.user ?? null);
-    });
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
+  const items =
+    nav === "public" ? publicNav : role === "tutor" ? tutorNav : studentNav;
 
   async function logout() {
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      console.error("Eroare la logout:", error);
-      return;
-    }
-
-    setUser(null);
-    setProfile(null);
-
-    await navigate({
-      to: "/",
-    });
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await signOut();
+    await navigate({ to: "/", replace: true });
   }
-
-  const displayName =
-    profile?.full_name ||
-    user?.user_metadata?.full_name ||
-    user?.email ||
-    "Contul meu";
-
-  const accountRoute =
-    profile?.role === "tutor" ? "/profesor-dashboard" : "/dashboard";
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -339,8 +266,8 @@ export function AppShell({
       )}
 
       <MobileTabBar
-        user={user}
-        profile={profile}
+        isAuthenticated={Boolean(user)}
+        role={role}
         accountRoute={accountRoute}
       />
     </div>
@@ -348,12 +275,12 @@ export function AppShell({
 }
 
 function MobileTabBar({
-  user,
-  profile,
+  isAuthenticated,
+  role,
   accountRoute,
 }: {
-  user: SupabaseUser | null;
-  profile: Profile | null;
+  isAuthenticated: boolean;
+  role: AppRole | null;
   accountRoute: "/dashboard" | "/profesor-dashboard";
 }) {
   const items: NavItem[] = [
@@ -361,13 +288,9 @@ function MobileTabBar({
     { to: "/cauta", label: "Caută", icon: Compass },
     { to: "/urgent", label: "Azi", icon: Zap },
     {
-      to: user ? accountRoute : "/auth",
-      label: user
-        ? profile?.role === "tutor"
-          ? "Profesor"
-          : "Cont"
-        : "Cont",
-      icon: user ? LayoutDashboard : User,
+      to: isAuthenticated ? accountRoute : "/auth",
+      label: isAuthenticated && role === "tutor" ? "Profesor" : "Cont",
+      icon: isAuthenticated ? LayoutDashboard : User,
     },
   ];
 

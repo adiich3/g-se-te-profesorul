@@ -11,17 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UrgentRouteImport } from './routes/urgent'
 import { Route as ProfesorOnboardingRouteImport } from './routes/profesor-onboarding'
-import { Route as ProfesorDashboardRouteImport } from './routes/profesor-dashboard'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CautaRouteImport } from './routes/cauta'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SedintaLessonIdRouteImport } from './routes/sedinta.$lessonId'
 import { Route as RezervareTutorIdRouteImport } from './routes/rezervare.$tutorId'
 import { Route as ProfesorTutorIdRouteImport } from './routes/profesor.$tutorId'
 import { Route as LectieLessonIdRouteImport } from './routes/lectie.$lessonId'
+import { Route as AuthenticatedProfesorDashboardRouteImport } from './routes/_authenticated/profesor-dashboard'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const UrgentRoute = UrgentRouteImport.update({
   id: '/urgent',
@@ -33,19 +34,9 @@ const ProfesorOnboardingRoute = ProfesorOnboardingRouteImport.update({
   path: '/profesor-onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfesorDashboardRoute = ProfesorDashboardRouteImport.update({
-  id: '/profesor-dashboard',
-  path: '/profesor-dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CautaRoute = CautaRouteImport.update({
@@ -61,6 +52,10 @@ const AuthRoute = AuthRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -88,17 +83,28 @@ const LectieLessonIdRoute = LectieLessonIdRouteImport.update({
   path: '/lectie/$lessonId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedProfesorDashboardRoute =
+  AuthenticatedProfesorDashboardRouteImport.update({
+    id: '/profesor-dashboard',
+    path: '/profesor-dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
-  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
-  '/profesor-dashboard': typeof ProfesorDashboardRoute
   '/profesor-onboarding': typeof ProfesorOnboardingRoute
   '/urgent': typeof UrgentRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/profesor-dashboard': typeof AuthenticatedProfesorDashboardRoute
   '/lectie/$lessonId': typeof LectieLessonIdRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
@@ -109,11 +115,11 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
-  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
-  '/profesor-dashboard': typeof ProfesorDashboardRoute
   '/profesor-onboarding': typeof ProfesorOnboardingRoute
   '/urgent': typeof UrgentRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/profesor-dashboard': typeof AuthenticatedProfesorDashboardRoute
   '/lectie/$lessonId': typeof LectieLessonIdRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
@@ -122,14 +128,15 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/cauta': typeof CautaRoute
-  '/dashboard': typeof DashboardRoute
   '/onboarding': typeof OnboardingRoute
-  '/profesor-dashboard': typeof ProfesorDashboardRoute
   '/profesor-onboarding': typeof ProfesorOnboardingRoute
   '/urgent': typeof UrgentRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/profesor-dashboard': typeof AuthenticatedProfesorDashboardRoute
   '/lectie/$lessonId': typeof LectieLessonIdRoute
   '/profesor/$tutorId': typeof ProfesorTutorIdRoute
   '/rezervare/$tutorId': typeof RezervareTutorIdRoute
@@ -142,11 +149,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/cauta'
-    | '/dashboard'
     | '/onboarding'
-    | '/profesor-dashboard'
     | '/profesor-onboarding'
     | '/urgent'
+    | '/dashboard'
+    | '/profesor-dashboard'
     | '/lectie/$lessonId'
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
@@ -157,11 +164,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/cauta'
-    | '/dashboard'
     | '/onboarding'
-    | '/profesor-dashboard'
     | '/profesor-onboarding'
     | '/urgent'
+    | '/dashboard'
+    | '/profesor-dashboard'
     | '/lectie/$lessonId'
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
@@ -169,14 +176,15 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/admin'
     | '/auth'
     | '/cauta'
-    | '/dashboard'
     | '/onboarding'
-    | '/profesor-dashboard'
     | '/profesor-onboarding'
     | '/urgent'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/profesor-dashboard'
     | '/lectie/$lessonId'
     | '/profesor/$tutorId'
     | '/rezervare/$tutorId'
@@ -185,12 +193,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   CautaRoute: typeof CautaRoute
-  DashboardRoute: typeof DashboardRoute
   OnboardingRoute: typeof OnboardingRoute
-  ProfesorDashboardRoute: typeof ProfesorDashboardRoute
   ProfesorOnboardingRoute: typeof ProfesorOnboardingRoute
   UrgentRoute: typeof UrgentRoute
   LectieLessonIdRoute: typeof LectieLessonIdRoute
@@ -215,25 +222,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfesorOnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profesor-dashboard': {
-      id: '/profesor-dashboard'
-      path: '/profesor-dashboard'
-      fullPath: '/profesor-dashboard'
-      preLoaderRoute: typeof ProfesorDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cauta': {
@@ -255,6 +248,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -292,17 +292,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LectieLessonIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/profesor-dashboard': {
+      id: '/_authenticated/profesor-dashboard'
+      path: '/profesor-dashboard'
+      fullPath: '/profesor-dashboard'
+      preLoaderRoute: typeof AuthenticatedProfesorDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedProfesorDashboardRoute: typeof AuthenticatedProfesorDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedProfesorDashboardRoute: AuthenticatedProfesorDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   CautaRoute: CautaRoute,
-  DashboardRoute: DashboardRoute,
   OnboardingRoute: OnboardingRoute,
-  ProfesorDashboardRoute: ProfesorDashboardRoute,
   ProfesorOnboardingRoute: ProfesorOnboardingRoute,
   UrgentRoute: UrgentRoute,
   LectieLessonIdRoute: LectieLessonIdRoute,
