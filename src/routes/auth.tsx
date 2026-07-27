@@ -123,24 +123,10 @@ function AuthPage() {
       return;
     }
 
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .upsert({
-        id: data.user.id,
-        email,
-        role,
-        full_name: name,
-      });
-
+    // Profilul este creat automat în backend la înregistrare
+    // (din numele și rolul trimise în metadatele contului).
     setLoading(false);
 
-    if (profileError) {
-      toast.error("Contul a fost creat, dar profilul nu a fost salvat", {
-        description: profileError.message,
-      });
-
-      return;
-    }
 
     if (!data.session) {
       toast.success("Cont creat", {
