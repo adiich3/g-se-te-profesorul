@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IntegrationNote } from "@/components/medito/IntegrationNote";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase/client";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -14,10 +14,14 @@ export const Route = createFileRoute("/auth")({
       { title: "Autentificare · Medito" },
       {
         name: "description",
-        content: "Intră în contul Medito sau creează-ți unul, ca elev sau ca profesor.",
+        content:
+          "Intră în contul Medito sau creează-ți unul, ca elev sau ca profesor.",
       },
       { property: "og:title", content: "Autentificare · Medito" },
-      { property: "og:description", content: "Contul tău Medito pentru meditații 1 la 1." },
+      {
+        property: "og:description",
+        content: "Contul tău Medito pentru meditații 1 la 1.",
+      },
     ],
   }),
   component: AuthPage,
@@ -25,21 +29,93 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [role, setRole] = useState<"student" | "tutor">("student");
 
-  function submit(e: React.FormEvent) {
+  const [role, setRole] = useState<"student" | "tutor">("student");
+  const [loading, setLoading] = useState(false);
+
+  async function login(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    toast.success("Cont demo activ", {
-      description: "Autentificarea reală se activează odată cu backendul.",
+
+    const form = new FormData(e.currentTarget);
+    const email = String(form.get("email") ?? "");
+    const password = String(form.get("password") ?? "");
+
+    setLoading(true);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
-    navigate({ to: role === "student" ? "/onboarding" : "/profesor-onboarding" });
+
+    setLoading(false);
+
+    if (error) {
+      toast.error("Autentificarea a eșuat", {
+        description: error.message,
+      });
+      return;
+    }
+
+    toast.success("Te-ai autentificat");
+
+    navigate({
+      to: role === "student" ? "/dashboard" : "/profesor-dashboard",
+    });
+  }
+
+  async function signup(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const form = new FormData(e.currentTarget);
+
+    const name = String(form.get("name") ?? "");
+    const email = String(form.get("email") ?? "");
+    const password = String(form.get("password") ?? "");
+
+    setLoading(true);
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+          role,
+        },
+      },
+    });
+
+    setLoading(false);
+
+    if (error) {
+      toast.error("Crearea contului a eșuat", {
+        description: error.message,
+      });
+      return;
+    }
+
+    if (!data.session) {
+      toast.success("Cont creat", {
+        description: "Verifică emailul pentru confirmarea contului.",
+      });
+      return;
+    }
+
+    toast.success("Cont creat");
+
+    navigate({
+      to: role === "student" ? "/onboarding" : "/profesor-onboarding",
+    });
   }
 
   return (
     <AppShell footer={false}>
       <div className="page-narrow py-12">
         <h1 className="text-3xl">Bine ai venit la Medito</h1>
-        <p className="mt-2 text-muted-foreground">Continuă ca elev sau ca profesor.</p>
+
+        <p className="mt-2 text-muted-foreground">
+          Continuă ca elev sau ca profesor.
+        </p>
 
         <div className="mt-6 grid grid-cols-2 gap-3">
           {(["student", "tutor"] as const).map((r) => (
@@ -55,8 +131,11 @@ function AuthPage() {
               }`}
             >
               <p className="font-semibold">
-                {r === "student" ? "Sunt elev / student" : "Sunt profesor"}
+                {r === "student"
+                  ? "Sunt elev / student"
+                  : "Sunt profesor"}
               </p>
+
               <p className="mt-1 text-sm text-muted-foreground">
                 {r === "student"
                   ? "Caut meditații pentru un obiectiv"
@@ -71,61 +150,111 @@ function AuthPage() {
             <TabsTrigger value="login" className="flex-1">
               Intră în cont
             </TabsTrigger>
+
             <TabsTrigger value="signup" className="flex-1">
               Creează cont
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="login">
-            <form onSubmit={submit} className="surface-panel mt-4 space-y-4 p-6">
+            <form
+              onSubmit={login}
+              className="surface-panel mt-4 space-y-4 p-6"
+            >
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" required placeholder="nume@exemplu.ro" />
+                <Label htmlFor="login-email">Email</Label>
+
+                <Input
+                  id="login-email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="nume@exemplu.ro"
+                />
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="pass">Parolă</Label>
-                <Input id="pass" type="password" required minLength={8} placeholder="••••••••" />
+                <Label htmlFor="login-password">Parolă</Label>
+
+                <Input
+                  id="login-password"
+                  name="password"
+                  type="password"
+                  required
+                  minLength={8}
+                  placeholder="••••••••"
+                />
               </div>
-              <Button type="submit" className="w-full" size="lg">
-                Continuă
+
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={loading}
+              >
+                {loading ? "Se autentifică..." : "Continuă"}
               </Button>
             </form>
           </TabsContent>
 
           <TabsContent value="signup">
-            <form onSubmit={submit} className="surface-panel mt-4 space-y-4 p-6">
+            <form
+              onSubmit={signup}
+              className="surface-panel mt-4 space-y-4 p-6"
+            >
               <div className="space-y-2">
-                <Label htmlFor="name">Nume complet</Label>
-                <Input id="name" required placeholder="Andrei Popescu" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email2">Email</Label>
-                <Input id="email2" type="email" required placeholder="nume@exemplu.ro" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="pass2">Parolă</Label>
+                <Label htmlFor="signup-name">Nume complet</Label>
+
                 <Input
-                  id="pass2"
+                  id="signup-name"
+                  name="name"
+                  required
+                  placeholder="Andrei Popescu"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signup-email">Email</Label>
+
+                <Input
+                  id="signup-email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="nume@exemplu.ro"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signup-password">Parolă</Label>
+
+                <Input
+                  id="signup-password"
+                  name="password"
                   type="password"
                   required
                   minLength={8}
                   placeholder="minim 8 caractere"
                 />
               </div>
-              <Button type="submit" className="w-full" size="lg">
-                Creează contul
+
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={loading}
+              >
+                {loading ? "Se creează..." : "Creează contul"}
               </Button>
             </form>
           </TabsContent>
         </Tabs>
 
-        <IntegrationNote className="mt-6" title="Autentificare demonstrativă">
-          Conturile, sesiunile și rolurile (elev, profesor, administrator, ulterior părinte) se vor
-          conecta la Lovable Cloud. Până atunci poți parcurge tot fluxul cu date demo.
-        </IntegrationNote>
-
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          <Link to="/" className="hover:text-foreground hover:underline">
+          <Link
+            to="/"
+            className="hover:text-foreground hover:underline"
+          >
             Înapoi la pagina principală
           </Link>
         </p>
