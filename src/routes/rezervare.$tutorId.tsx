@@ -19,6 +19,9 @@ import {
 import { slotsForTutor, subjectById, tutorById, userById } from "@/lib/demo-data";
 import { formatDay, formatRON, formatTime } from "@/lib/matching";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { profileIdForTutor } from "@/lib/tutor-profile-map";
 
 export const Route = createFileRoute("/rezervare/$tutorId")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -44,6 +47,7 @@ function BookingPage() {
   const { tutorId } = Route.useParams();
   const { slot: slotFromSearch } = Route.useSearch();
   const navigate = useNavigate();
+  const { user: authUser, role } = useAuth();
   const tutor = tutorById(tutorId);
   const [step, setStep] = useState(0);
   const [slotId, setSlotId] = useState<string | undefined>(slotFromSearch);
@@ -51,6 +55,7 @@ function BookingPage() {
   const [duration, setDuration] = useState(String(tutor?.lessonDurations[0] ?? 60));
   const [topic, setTopic] = useState("");
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   if (!tutor) {
     return (
@@ -81,7 +86,7 @@ function BookingPage() {
             <span className="mx-auto grid size-12 place-items-center rounded-full bg-success/10 text-success">
               <Check className="size-6" />
             </span>
-            <h1 className="mt-4 text-2xl">Rezervare demo confirmată</h1>
+            <h1 className="mt-4 text-2xl">Rezervare trimisă</h1>
             <p className="mt-2 text-muted-foreground">
               {user.fullName} · {subjectById(subjectId)?.name}
               <br />
@@ -91,8 +96,7 @@ function BookingPage() {
               · {duration} min
             </p>
             <p className="mt-4 text-sm text-muted-foreground">
-              Nicio plată, rezervare reală sau notificare nu a fost creată. Fluxul va deveni real
-              după conectarea backendului, emailului și Stripe.
+              Cererea a fost salvată și așteaptă confirmarea profesorului.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg">
@@ -244,15 +248,65 @@ function BookingPage() {
               </Button>
               <Button
                 size="lg"
-                disabled={step === 0 && !slot}
-                onClick={() => {
+                disabled={(step === 0 && !slot) || submitting}
+                onClick={async () => {
                   if (step === 0 && !slot) return;
-                  if (step < 2) return setStep(step + 1);
-                  toast.success("Rezervare trimisă profesorului");
+
+                  if (step < 2) {
+                    setStep(step + 1);
+                    return;
+                  }
+
+                  if (!authUser) {
+                    toast.error("Trebuie să fii autentificat pentru a rezerva.");
+                    navigate({ to: "/auth" });
+                    return;
+                  }
+
+                  if (role !== "student") {
+                    toast.error("Doar conturile de elev pot crea rezervări.");
+                    return;
+                  }
+
+                  if (!slot) {
+                    toast.error("Selectează un interval.");
+                    return;
+                  }
+
+                  const tutorProfileId = profileIdForTutor(tutorId);
+
+                  if (!tutorProfileId) {
+                    toast.error("Profesorul nu este conectat încă la un profil.");
+                    return;
+                  }
+
+                  setSubmitting(true);
+
+                  const { error } = await supabase
+                    .from("bookings")
+                    .insert({
+                      student_id: authUser.id,
+                      tutor_id: tutorProfileId,
+                      scheduled_at: slot.start,
+                      duration_minutes: Number(duration),
+                      subject: subjectById(subjectId)?.name ?? subjectId,
+                      notes: topic.trim() || null,
+                      status: "pending",
+                    });
+
+                  setSubmitting(false);
+
+                  if (error) {
+                    console.error("Booking error:", error);
+                    toast.error(`Rezervarea a eșuat: ${error.message}`);
+                    return;
+                  }
+
+                  toast.success("Rezervarea a fost trimisă profesorului.");
                   setDone(true);
                 }}
               >
-                {step === 2 ? "Confirmă rezervarea" : "Continuă"}
+                {submitting ? "Se trimite..." : step === 2 ? "Confirmă rezervarea" : "Continuă"}
               </Button>
             </div>
           </div>
