@@ -201,7 +201,7 @@ function StudentDashboard() {
               </p>
 
               <Button asChild className="mt-4">
-                <Link to="/cauta" search={{}}>
+                <Link to="/cauta" search={{ q: undefined, azi: undefined }}>
                   Caută profesori
                 </Link>
               </Button>

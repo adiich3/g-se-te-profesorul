@@ -91,7 +91,7 @@ function Landing() {
             className="mt-7 flex flex-col gap-3 sm:flex-row"
             onSubmit={(e) => {
               e.preventDefault();
-              navigate({ to: "/cauta", search: { q: need || undefined } });
+              navigate({ to: "/cauta", search: { q: need || undefined, azi: undefined } });
             }}
           >
             <div className="relative flex-1">
@@ -159,7 +159,7 @@ function Landing() {
             <Link
               key={c}
               to="/cauta"
-              search={{ q: c }}
+              search={{ q: c, azi: undefined }}
               className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:border-primary hover:bg-primary-soft hover:text-primary"
             >
               {c}
@@ -199,7 +199,7 @@ function Landing() {
             </p>
           </div>
           <Button asChild variant="ghost" size="sm">
-            <Link to="/cauta">Vezi toți</Link>
+            <Link to="/cauta" search={{ q: undefined, azi: undefined }}>Vezi toți</Link>
           </Button>
         </div>
         <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">

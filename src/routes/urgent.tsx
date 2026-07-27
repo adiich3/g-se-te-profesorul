@@ -90,7 +90,7 @@ function UrgentPage() {
 
         {matches.length === 0 && (
           <Button asChild className="mt-5">
-            <Link to="/cauta">Caută pentru zilele următoare</Link>
+            <Link to="/cauta" search={{ q: undefined, azi: undefined }}>Caută pentru zilele următoare</Link>
           </Button>
         )}
       </div>

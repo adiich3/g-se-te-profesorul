@@ -63,7 +63,7 @@ function BookingPage() {
         <div className="page-narrow py-20 text-center">
           <h1 className="text-2xl">Profesorul nu a fost găsit</h1>
           <Button asChild className="mt-5">
-            <Link to="/cauta">Înapoi la căutare</Link>
+            <Link to="/cauta" search={{ q: undefined, azi: undefined }}>Înapoi la căutare</Link>
           </Button>
         </div>
       </AppShell>

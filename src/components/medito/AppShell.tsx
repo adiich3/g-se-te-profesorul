@@ -212,6 +212,7 @@ export function AppShell({
 
                 <Link
                   to="/cauta"
+                  search={{ q: undefined, azi: undefined }}
                   className="block text-muted-foreground hover:text-foreground"
                 >
                   Caută profesori

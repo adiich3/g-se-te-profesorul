@@ -104,7 +104,7 @@ function Onboarding() {
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild variant="secondary">
-              <Link to="/cauta">Vezi toate rezultatele</Link>
+              <Link to="/cauta" search={{ q: undefined, azi: undefined }}>Vezi toate rezultatele</Link>
             </Button>
             <Button variant="ghost" onClick={() => setStep(1)}>
               Modifică răspunsurile
